@@ -14,58 +14,32 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 #
+
+# [START imports]
+import os
+import urllib
+
+from google.appengine.api import users
+from google.appengine.ext import ndb
+
+import jinja2
 import webapp2
 
 
-MAIN_PAGE_HTML = """\
-<!DOCTYPE HTML>
-<html>
-    <head>
+JINJA_ENVIRONMENT = jinja2.Environment(
+    loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
+    extensions=['jinja2.ext.autoescape'],
+    autoescape=True)
+# [END imports]
 
-        <title> Hanabi </title>
-        <link rel="stylesheet" type="text/css" href="stylesheets/start_screen.css">
-        <link href="http://s3.amazonaws.com/codecademy-content/courses/ltp/css/shift.css" rel="stylesheet">
+DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 
-    </head>
+class MainPage(webapp2.RequestHandler):
 
-    <body>
-
-        <div class="nav">
-           <div class="container">
-               <p id="hanabi_online"> Hanabi online! </p>
-           </div>
-        </div>
-
-        <div class="room_list">
-            <div class="container">
-                <p> some message for u </p>
-            </div>
-        </div>
-
-        <div class="main_menu">
-            <div class="container">
-                <div class="game_create">
-                    <p> some message for u 2 </p>
-                </div>
-            </div>
-        </div>
-
-        <div class="friend_zone">
-            <div class="container">
-                <p> third message for u </p>
-                <a href="test_screen.html"> link here </a>
-            </div>
-        </div>
-
-    </body>
-</html>
-"""
-
-
-class MainHandler(webapp2.RequestHandler):
     def get(self):
-        self.response.write(MAIN_PAGE_HTML)
+        template = JINJA_ENVIRONMENT.get_template('index.html')
+        self.response.write(template.render())
 
-app = webapp2.WSGIApplication([
-    ('/', MainHandler)
+application = webapp2.WSGIApplication([
+    ('/', MainPage)
 ], debug=True)
