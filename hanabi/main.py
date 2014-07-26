@@ -15,10 +15,10 @@
 # limitations under the License.
 #
 
-# [START imports]
 import os
 import urllib
 import logging
+import random
 
 from google.appengine.api import channel
 from google.appengine.api import users
@@ -30,37 +30,39 @@ import webapp2
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
-    extensions=['jinja2.ext.autoescape'],
+    extensions=["jinja2.ext.autoescape"],
     autoescape=True)
-# [END imports]
 
-DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
+user_id = str(random.randint(1, 100000));
+
 
 class MainPage(webapp2.RequestHandler):
-
     def get(self):
         user = users.get_current_user()
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
 
-        token = channel.create_channel("my_channel")
-        template_values = {'token': token, 't': user.user_id()}
-        template = JINJA_ENVIRONMENT.get_template('index.html')
+        token = channel.create_channel(user_id)
+        template_values = {"token": token, "t": user.user_id()}
+        template = JINJA_ENVIRONMENT.get_template("index.html")
         self.response.write(template.render(template_values))
-#        channel.send_message("my_channel", "text")
+
 
 class TestHandler(webapp2.RequestHandler):
-    
-    def get(self):
-        logging.info("GET WAS!")
-        print "a"
-
     def post(self):
-        logging.info("Got it!")
-        channel.send_message("my_channel", self.request.get("data"))
+        logging.info("TestHandler post")
+        channel.send_message(user_id, self.request.get("data"))
+
+
+class GameCreateHandler(webapp2.RequestHandler):
+    def post(self):
+        logging.info("GameCreateHandler post")
+        
+
 
 application = webapp2.WSGIApplication([
-    ('/', MainPage),
-    ('/test', TestHandler)
+    ("/", MainPage),
+    ("/test", TestHandler),
+    ("/game_create", GameCreateHandler)
 ], debug=True)

@@ -23,9 +23,14 @@
 
         <div class="room_list">
             <div class="container">
-                <p> some message for u {{ t }} </p>
-                <div><textarea id="content" rows="3" cols="60"></textarea></div>
-                <div><input type="submit" value="Sign Guestbook" onclick="send_message()"></div>
+                <p> some message for u {{ t }} </p><!--
+                <div>
+                    <textarea id="content" rows="3" cols="60"></textarea>
+                    <input type="submit" value="Post Message" onclick="send_message()">
+                </div>-->
+                <div class="game_list">
+
+                </div>
             </div>
         </div>
 
@@ -38,6 +43,15 @@
                             document.getElementById("p").innerHTML += "1";
                         </script>
                     {% endfor %}
+
+                <div>
+                    <input id="game_name" type="text">
+                    <br>
+                    <input id="password" type="text">
+                    <br>
+                    <input id="game_create" type="submit" value="Create Game" onclick="create_game()">
+                </div>
+
                 </div>
             </div>
         </div>
@@ -49,6 +63,7 @@
                 <p id="p1">Hi!</p>
             </div>
         </div>
+
 <!--
 
         <form>Guestbook name:
@@ -57,6 +72,7 @@
         </form>
 
         <a href="{{ url|safe }}">{{ url_linktext }}</a>    -->
+
         <script type="text/javascript" src="scripts/main.js"></script>
     </body>
 </html>
