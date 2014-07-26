@@ -1,0 +1,51 @@
+.nav {
+    height: 10%;
+    width: 100%;
+    background-color: #45ADA8;
+    border: 2px solid black;
+    border-radius: 5px;
+    position: relative;
+    top: -30px;
+    clear: both;
+    display: inline-block;
+}
+
+body {
+    height: 500px;
+    width: 800px;
+}
+
+.room_list {
+    background-color: #9933CC;
+    float: left;
+    display: inline-block;
+    width: 49%;
+    height: 60%;
+    position: relative;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.main_menu {
+    background-color: #CC3399;
+    float: right;
+    display: inline-block;
+    width: 49%;
+    height: 60%;
+    position: relative;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.friend_zone {
+    background-color: blue;
+    display: inline-block;
+    width: 100%;
+    height: 27%;
+    clear: both;
+    margin-top: 10px;
+    padding-top: 10px;
+    position: relative;
+    border: 2px solid black;
+    border-radius: 5px;
+}
