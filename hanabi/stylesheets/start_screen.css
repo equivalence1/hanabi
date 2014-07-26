@@ -53,3 +53,12 @@ body {
 p {
     font-family: Jokerman, cursive;
 }
+
+.game_list {
+    background-color: #DDDDDD;
+    margin: auto;
+    height: 220px;
+    width: 360px;
+    position: relative;
+    border-radius: 2px;
+}

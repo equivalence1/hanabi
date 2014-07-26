@@ -16,13 +16,10 @@ function sendMessage(path, opt_param) {
 
 function onOpened() {
     alert("Channel opened!");
-    sendMessage("/test", "data=123");
-    alert("Sended!");
 }
 
 function onMessage(msg) {
     alert(msg.data);
-    document.getElementById("p").innerHTML = msg.data;
 }
 
 function onError(err) {
@@ -31,9 +28,4 @@ function onError(err) {
 
 function onClose() {
     alert("Channel closed!");
-}
-
-function send_message(url, ) {
-    sendMessage("/test", "data=" + document.getElementById("content").value);
-    alert("Peremennaja!")
 }

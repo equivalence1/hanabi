@@ -17,19 +17,15 @@
 
         <div class="nav">
            <div class="container">
-               <p id="hanabi_online"> Hanabi online! </p>
+               <h2 id="hanabi_online"> Hanabi </h2>
            </div>
         </div>
 
         <div class="room_list">
             <div class="container">
-                <p> some message for u {{ t }} </p><!--
-                <div>
-                    <textarea id="content" rows="3" cols="60"></textarea>
-                    <input type="submit" value="Post Message" onclick="send_message()">
-                </div>-->
+                <h3> Room list: </h3>
                 <div class="game_list">
-
+                    <p>qqq</p>
                 </div>
             </div>
         </div>
@@ -37,20 +33,15 @@
         <div class="main_menu">
             <div class="container">
                 <div class="game_create">
-                    <p id="p"> some message for u 2 </p>
-                    {% for i in range(10) %}
-                        <script>
-                            document.getElementById("p").innerHTML += "1";
-                        </script>
-                    {% endfor %}
+                    <h3 id="p"> Create your own game! </h3>
 
-                <div>
-                    <input id="game_name" type="text">
-                    <br>
-                    <input id="password" type="text">
-                    <br>
-                    <input id="game_create" type="submit" value="Create Game" onclick="create_game()">
-                </div>
+                    <div>
+                        <input id="game_name" type="text">
+                        <br>
+                        <input id="password" type="text">
+                        <br>
+                        <input id="game_create" type="submit" value="Create Game" onclick="create_game()">
+                    </div>
 
                 </div>
             </div>
@@ -63,15 +54,6 @@
                 <p id="p1">Hi!</p>
             </div>
         </div>
-
-<!--
-
-        <form>Guestbook name:
-            <input value="{{ guestbook_name }}" name="guestbook_name">
-            <input type="submit" value="switch">
-        </form>
-
-        <a href="{{ url|safe }}">{{ url_linktext }}</a>    -->
 
         <script type="text/javascript" src="scripts/main.js"></script>
     </body>
