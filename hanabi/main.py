@@ -19,6 +19,7 @@
 import os
 import urllib
 
+from google.appengine.api import channel
 from google.appengine.api import users
 from google.appengine.ext import ndb
 
@@ -37,8 +38,15 @@ DEFAULT_GUESTBOOK_NAME = 'default_guestbook'
 class MainPage(webapp2.RequestHandler):
 
     def get(self):
+        user = users.get_current_user()
+        if not user:
+            self.redirect(users.create_login_url(self.request.uri))
+            return
+
+        token = channel.create_channel("my_channel")
+        template_values = {'token': token, 't': user.user_id()}
         template = JINJA_ENVIRONMENT.get_template('index.html')
-        self.response.write(template.render())
+        self.response.write(template.render(template_values))
 
 application = webapp2.WSGIApplication([
     ('/', MainPage)

@@ -1,0 +1,1 @@
+document.getElementById("p").innerHTML += aba;

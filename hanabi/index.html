@@ -10,6 +10,16 @@
 
     <body>
 
+        <script>
+            channel = new goog.appengine.Channel('{{ token }}');
+/*            var socket = channel.open();
+            socket.onopen = onOpened;
+            socket.onmessage = onMessage;
+            socket.onerror = onError;
+            socket.onclose = onClose; */
+            var aba = "124";
+        </script>
+
         <div class="nav">
            <div class="container">
                <p id="hanabi_online"> Hanabi online! </p>
@@ -18,14 +28,19 @@
 
         <div class="room_list">
             <div class="container">
-                <p> some message for u </p>
+                <p> some message for u {{ t }} </p>
             </div>
         </div>
 
         <div class="main_menu">
             <div class="container">
                 <div class="game_create">
-                    <p> some message for u 2 </p>
+                    <p id="p"> some message for u 2 </p>
+                    {% for i in range(10) %}
+                        <script>
+                            document.getElementById("p").innerHTML += "1";
+                        </script>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -48,6 +63,6 @@
         </form>
 
         <a href="{{ url|safe }}">{{ url_linktext }}</a>    -->
-
+        <script type="text/javascript" src="scripts/main.js"></script>
     </body>
 </html>
