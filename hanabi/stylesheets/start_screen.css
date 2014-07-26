@@ -49,3 +49,7 @@ body {
     border: 2px solid black;
     border-radius: 5px;
 }
+
+p {
+    font-family: Jokerman, cursive;
+}

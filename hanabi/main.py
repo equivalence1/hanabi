@@ -18,6 +18,7 @@
 # [START imports]
 import os
 import urllib
+import logging
 
 from google.appengine.api import channel
 from google.appengine.api import users
@@ -47,7 +48,19 @@ class MainPage(webapp2.RequestHandler):
         template_values = {'token': token, 't': user.user_id()}
         template = JINJA_ENVIRONMENT.get_template('index.html')
         self.response.write(template.render(template_values))
+#        channel.send_message("my_channel", "text")
+
+class TestHandler(webapp2.RequestHandler):
+    
+    def get(self):
+        logging.info("GET WAS!")
+        print "a"
+
+    def post(self):
+        logging.info("Got it!")
+        channel.send_message("my_channel", self.request.get("data"))
 
 application = webapp2.WSGIApplication([
-    ('/', MainPage)
+    ('/', MainPage),
+    ('/test', TestHandler)
 ], debug=True)

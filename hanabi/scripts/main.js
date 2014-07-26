@@ -1,1 +1,1 @@
-document.getElementById("p").innerHTML += aba;
+document.getElementById("p").innerHTML += "AZAZA";

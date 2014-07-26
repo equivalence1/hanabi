@@ -9,16 +9,11 @@
     </head>
 
     <body>
-
+        <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
-            channel = new goog.appengine.Channel('{{ token }}');
-/*            var socket = channel.open();
-            socket.onopen = onOpened;
-            socket.onmessage = onMessage;
-            socket.onerror = onError;
-            socket.onclose = onClose; */
-            var aba = "124";
+            var channel = new goog.appengine.Channel('{{ token }}');
         </script>
+        <script type="text/javascript" src="scripts/channel_create.js"></script>
 
         <div class="nav">
            <div class="container">
@@ -29,6 +24,8 @@
         <div class="room_list">
             <div class="container">
                 <p> some message for u {{ t }} </p>
+                <div><textarea id="content" rows="3" cols="60"></textarea></div>
+                <div><input type="submit" value="Sign Guestbook" onclick="send_message()"></div>
             </div>
         </div>
 
@@ -49,13 +46,10 @@
             <div class="container">
                 <p> third message for u </p>
                 <a href="test_screen.html"> link here </a>
+                <p id="p1">Hi!</p>
             </div>
         </div>
 <!--
-        <form action="/sign?guestbook_name={{ guestbook_name }}" method="post">
-            <div><textarea name="content" rows="3" cols="60"></textarea></div>
-            <div><input type="submit" value="Sign Guestbook"></div>
-        </form>
 
         <form>Guestbook name:
             <input value="{{ guestbook_name }}" name="guestbook_name">
