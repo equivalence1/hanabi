@@ -19,6 +19,7 @@ body {
     background-color: #9933CC;
     float: left;
     display: inline-block;
+    margin-top: -20px;
     width: 49%;
     height: 60%;
     position: relative;
@@ -30,6 +31,7 @@ body {
     background-color: #CC3399;
     float: right;
     display: inline-block;
+    margin-top: -20px;
     width: 49%;
     height: 60%;
     position: relative;
@@ -61,4 +63,41 @@ p {
     width: 360px;
     position: relative;
     border-radius: 2px;
+}
+
+.game_div {
+    margin-left: 10px;
+    margin-right: 10px;
+    background-color: white;
+    border-radius: 2px;
+    display: inline-block;
+    height: 27px;
+    width: 320px;
+}
+
+.game_name {
+    display: inline-block;
+    float: left;
+    margin-left: 10px;
+    margin-top: 5px;
+}
+
+.join_button {
+    display: inline-block;
+    float: right;
+    border: 1px solid #EE55EE;
+    border-radius: 2px;
+    font-family: cursive;
+    margin: 1px 2px 2px;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.join_button:hover {
+    background-color: #EE55EE;
+    font-color: white;
+}
+
+.room_list h3 {
+    margin-left: 16px;
 }

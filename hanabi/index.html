@@ -14,6 +14,7 @@
             var channel = new goog.appengine.Channel('{{ token }}');
         </script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
+        <script type="text/javascript" src="scripts/main.js"></script>
 
         <div class="nav">
            <div class="container">
@@ -24,8 +25,14 @@
         <div class="room_list">
             <div class="container">
                 <h3> Room list: </h3>
-                <div class="game_list">
-                    <p>qqq</p>
+                <div class="game_list" id="game_list" style="overflow-y: scroll">
+                    {% for game in games %}
+                        <script>
+                            var name = "{{ game.name }}";
+                            var pass = "{{ game.password }}";
+                            add_to_list(name.toString(), pass.toString());
+                        </script>
+                    {% endfor %}
                 </div>
             </div>
         </div>
@@ -33,7 +40,7 @@
         <div class="main_menu">
             <div class="container">
                 <div class="game_create">
-                    <h3 id="p"> Create your own game! </h3>
+                    <h3> Create your own game! </h3>
 
                     <div>
                         <input id="game_name" type="text">
@@ -49,12 +56,9 @@
 
         <div class="friend_zone">
             <div class="container">
-                <p> third message for u </p>
-                <a href="test_screen.html"> link here </a>
-                <p id="p1">Hi!</p>
+                <p> Friends are going to be here </p>
             </div>
         </div>
 
-        <script type="text/javascript" src="scripts/main.js"></script>
     </body>
 </html>

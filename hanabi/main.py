@@ -33,18 +33,24 @@ JINJA_ENVIRONMENT = jinja2.Environment(
     extensions=["jinja2.ext.autoescape"],
     autoescape=True)
 
-user_id = str(random.randint(1, 100000));
 
+def game_key(game_name):
+    return ndb.Key("Game", game_name)
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
+        user_id = str(random.randint(1, 100000));
         user = users.get_current_user()
+        
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
 
+        games_query = Game.query()
+        games = games_query
+
         token = channel.create_channel(user_id)
-        template_values = {"token": token, "t": user.user_id()}
+        template_values = {"token": token, "t": user.user_id(), "games": games}
         template = JINJA_ENVIRONMENT.get_template("index.html")
         self.response.write(template.render(template_values))
 
@@ -55,14 +61,38 @@ class TestHandler(webapp2.RequestHandler):
         channel.send_message(user_id, self.request.get("data"))
 
 
+class Game(ndb.Model):
+    name = ndb.StringProperty(indexed=False)
+    password = ndb.StringProperty(indexed=False)
+
+
 class GameCreateHandler(webapp2.RequestHandler):
     def post(self):
         logging.info("GameCreateHandler post")
         
+        game_name = self.request.get("game_name")
+        password = self.request.get("password")
+
+        game = Game(parent=game_key(game_name));
+
+        game.name = game_name
+        game.password = password
+        game.put()
+
+
+class JoinGame(webapp2.RequestHandler):
+    def post(self):
+        logging.info("JoinGame post")
+        
+        game_name = self.request.get("game_name")
+        games = Game.query(ancestor=game_key(game_name))
+        for game in games:            
+            logging.info("Password from room '" + game_name + "' is: " + game.password);
 
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/test", TestHandler),
-    ("/game_create", GameCreateHandler)
+    ("/game_create", GameCreateHandler),
+    ("/join_game", JoinGame)
 ], debug=True)

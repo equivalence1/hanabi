@@ -5,13 +5,13 @@ socket.onerror = onError;
 socket.onclose = onClose;
 
 function sendMessage(path, opt_param) {
-  path += '?g=' + "my_game";
-  if (opt_param) {
-    path += '&' + opt_param;
-  }
-  var xhr = new XMLHttpRequest();
-  xhr.open('POST', path, true);
-  xhr.send();
+    path += '?g=' + "my_game";
+    if (opt_param) {
+        path += '&' + opt_param;
+    }
+    var xhr = new XMLHttpRequest();
+    xhr.open('POST', path, true);
+    xhr.send();
 }
 
 function onOpened() {
