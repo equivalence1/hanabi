@@ -15,11 +15,13 @@ function sendMessage(path, opt_param) {
 }
 
 function onOpened() {
-    alert("Channel opened!");
+    document.getElementById("last").innerHTML += "Channel opened!";
+    //alert("Channel opened!");
 }
 
 function onMessage(msg) {
-    alert(msg.data);
+    document.getElementById("last").innerHTML += "<br> msg: " + msg.data;
+    //alert(msg.data);
 }
 
 function onError(err) {
@@ -27,5 +29,6 @@ function onError(err) {
 }
 
 function onClose() {
-    alert("Channel closed!");
+    document.getElementById("last").innerHTML += "Channel closed!";
+    //alert("Channel closed!");
 }

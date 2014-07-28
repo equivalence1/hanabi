@@ -29,6 +29,6 @@ function add_to_list(name) {
 }
 
 function join_room() {
-    alert("pressed");
-    sendMessage("/join_game", "game_name=" + this.getAttribute("room_name") + "&user_id=" + user_id);
+    var game_password = prompt("Enter password");
+    sendMessage("/join_game", "game_name=" + this.getAttribute("room_name") + "&user_id=" + user_id + "&game_password=" + game_password);
 }

@@ -56,16 +56,11 @@ class MainPage(webapp2.RequestHandler):
         self.response.write(template.render(template_values))
 
 
-class TestHandler(webapp2.RequestHandler):
-    def post(self):
-        logging.info("TestHandler post")
-        channel.send_message(user_id, self.request.get("data"))
-
-
 class Game(ndb.Model):
     name = ndb.StringProperty(indexed=False)
     password = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
+    user_list = ndb.StringProperty(indexed=False, repeated=True)
 
 
 class GameCreateHandler(webapp2.RequestHandler):
@@ -74,6 +69,10 @@ class GameCreateHandler(webapp2.RequestHandler):
         
         game_name = self.request.get("game_name")
         password = self.request.get("password")
+
+        games = Game.query(ancestor=game_key(game_name)).fetch()
+        if (len(games) != 0):
+            return
 
         game = Game(parent=game_key(game_name))
 
@@ -88,16 +87,24 @@ class JoinGame(webapp2.RequestHandler):
 
         user_id = self.request.get("user_id")        
         game_name = self.request.get("game_name")
-        games = Game.query(ancestor=game_key(game_name))
-        
-        for game in games:            
-            logging.info("Password from room '" + game_name + "' is: " + game.password)
-            channel.send_message(user_id, game.password)
+        entered_password = self.request.get("game_password")
+
+        game = Game.query(ancestor=game_key(game_name)).fetch(1)[0]
+
+        if (entered_password != game.password):
+            logging.info("Wrong password for " + game_name + ", entered: " + entered_password + ", real: " + game.password)
+            channel.send_message(user_id, "Wrong password")
+            return
+
+        game.user_list.append(user_id)
+        game.put()
+        logging.info(user_id + " successfully joined into game named " + game_name)
+        logging.info("Now in game are: " + ', '.join(game.user_list))
+        channel.send_message(user_id, "Successfully joined into game named $" + game_name + "$. Already in the game: " + ', '.join(game.user_list))
 
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),
-    ("/test", TestHandler),
     ("/game_create", GameCreateHandler),
     ("/join_game", JoinGame)
 ], debug=True)
