@@ -12,6 +12,7 @@
         <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
             var channel = new goog.appengine.Channel('{{ token }}');
+            var user_id = "{{ user_id }}";
         </script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
@@ -28,9 +29,7 @@
                 <div class="game_list" id="game_list" style="overflow-y: scroll">
                     {% for game in games %}
                         <script>
-                            var name = "{{ game.name }}";
-                            var pass = "{{ game.password }}";
-                            add_to_list(name.toString(), pass.toString());
+                            add_to_list("{{ game.name }}");
                         </script>
                     {% endfor %}
                 </div>

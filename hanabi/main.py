@@ -37,9 +37,10 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 def game_key(game_name):
     return ndb.Key("Game", game_name)
 
+
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        user_id = str(random.randint(1, 100000));
+        user_id = str(random.randint(1, 100000))
         user = users.get_current_user()
         
         if not user:
@@ -50,7 +51,7 @@ class MainPage(webapp2.RequestHandler):
         games = games_query
 
         token = channel.create_channel(user_id)
-        template_values = {"token": token, "t": user.user_id(), "games": games}
+        template_values = {"token": token, "t": user.user_id(), "games": games, "user_id": user_id}
         template = JINJA_ENVIRONMENT.get_template("index.html")
         self.response.write(template.render(template_values))
 
@@ -73,7 +74,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
         password = self.request.get("password")
 
-        game = Game(parent=game_key(game_name));
+        game = Game(parent=game_key(game_name))
 
         game.name = game_name
         game.password = password
@@ -83,11 +84,14 @@ class GameCreateHandler(webapp2.RequestHandler):
 class JoinGame(webapp2.RequestHandler):
     def post(self):
         logging.info("JoinGame post")
-        
+
+        user_id = self.request.get("user_id")        
         game_name = self.request.get("game_name")
         games = Game.query(ancestor=game_key(game_name))
+        
         for game in games:            
-            logging.info("Password from room '" + game_name + "' is: " + game.password);
+            logging.info("Password from room '" + game_name + "' is: " + game.password)
+            channel.send_message(user_id, game.password)
 
 
 application = webapp2.WSGIApplication([

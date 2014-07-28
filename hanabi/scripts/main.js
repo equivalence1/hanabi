@@ -5,7 +5,7 @@ function create_game() {
     sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password)
 }
 
-function add_to_list(name, password) {
+function add_to_list(name) {
     var new_game = document.createElement("div");
     new_game.setAttribute("class", "game_div");
     new_game.id = "room_name=" + name;
@@ -26,11 +26,9 @@ function add_to_list(name, password) {
 
     var room_list = document.getElementById("game_list");
     room_list.appendChild(new_game);
-
 }
 
 function join_room() {
     alert("pressed");
-    sendMessage("/join_game", "game_name=" + this.getAttribute("room_name"));
-//    this.getAttribute("room_name");
+    sendMessage("/join_game", "game_name=" + this.getAttribute("room_name") + "&user_id=" + user_id);
 }
