@@ -102,9 +102,21 @@ class JoinGame(webapp2.RequestHandler):
         logging.info("Now in game are: " + ', '.join(game.user_list))
         channel.send_message(user_id, "Successfully joined into game named $" + game_name + "$. Already in the game: " + ', '.join(game.user_list))
 
+        template = JINJA_ENVIRONMENT.get_template("game_chat_screen.html")
+        self.response.write(template.render())
+
+
+class SendChatMessage(webapp2.RequestHandler):
+    def get(self):
+        pass
+
+    def post(self):
+        pass
+
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
-    ("/join_game", JoinGame)
+    ("/join_game", JoinGame),
+    ("/send_chat_message", SendChatMessage)
 ], debug=True)

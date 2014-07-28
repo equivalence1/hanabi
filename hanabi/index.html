@@ -12,8 +12,9 @@
         <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
             var channel = new goog.appengine.Channel('{{ token }}');
-            var user_id = "{{ user_id }}";
+            var user_id_init = "{{ user_id }}";
         </script>
+        <script type="text/javascript" src="scripts/consts.js"></script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
 
