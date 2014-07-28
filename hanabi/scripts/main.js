@@ -30,17 +30,17 @@ function add_to_list(name) {
 
 function join_room() {
     var game_password = prompt("Enter password");
-    sendMessage("/join_game", "game_name=" + this.getAttribute("room_name") + "&user_id=" + user_id + "&game_password=" + game_password);
+    sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
 
     display_chat_room();
 }
 
 function display_chat_room() {
-    document.getElementById("main_content").style.display = 'none';
-    document.getElementById("chat_room").style.display = '';
+    document.getElementById("main_content").style.display = "none";
+    document.getElementById("chat_room").style.display = "";
 }
 
 function submit() {
-    sendMessage("/send_chat_message", "user_id=" + user_id + "&message=" + document.getElementById("message").value + "&game_name=" + game_name);
+    sendMessage("/send_chat_message", "user_id=" + user_id + "&game_name=" + game_name + "&message=" + document.getElementById("message").value);
     document.getElementById("message").value = "";
 }

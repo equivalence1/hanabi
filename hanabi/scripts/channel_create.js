@@ -32,6 +32,7 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("joined") == 0) {
         game_name = deserialize(msg.data, "game_name");
+        document.getElementById("last").innerHTML = msg.data;
     }
 
     if (msg.data.indexOf("new_message") == 0) {
