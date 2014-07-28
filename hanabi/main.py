@@ -47,7 +47,7 @@ class MainPage(webapp2.RequestHandler):
             self.redirect(users.create_login_url(self.request.uri))
             return
 
-        games_query = Game.query()
+        games_query = Game.query().order(-Game.date)
         games = games_query
 
         token = channel.create_channel(user_id)
@@ -65,6 +65,7 @@ class TestHandler(webapp2.RequestHandler):
 class Game(ndb.Model):
     name = ndb.StringProperty(indexed=False)
     password = ndb.StringProperty(indexed=False)
+    date = ndb.DateTimeProperty(auto_now_add=True)
 
 
 class GameCreateHandler(webapp2.RequestHandler):
