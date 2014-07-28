@@ -1,8 +1,10 @@
+var game_name;
+
 function create_game() {
-    var game_name = document.getElementById("game_name").value.toString();
+    game_name = document.getElementById("game_name").value.toString();
     var game_password = document.getElementById("password").value.toString();
 
-    sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password)
+    sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password + "&user_id=" + user_id);
 }
 
 function add_to_list(name) {
@@ -31,8 +33,6 @@ function add_to_list(name) {
 function join_room() {
     var game_password = prompt("Enter password");
     sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
-
-    display_chat_room();
 }
 
 function display_chat_room() {
