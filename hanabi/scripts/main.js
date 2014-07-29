@@ -48,3 +48,23 @@ function submit() {
 function start_game() {
     sendMessage("/start_game", "game_name=" + game_name);
 }
+
+function add_message(msg) {
+    var new_message = document.createElement("div");
+    new_message.setAttribute("class", "message_div");
+//    new_game.id = "room_name=" + name;
+//    new_game.name = name;
+
+    var from_user = document.createElement("div");
+    from_user.class = "msg_user";
+    from_user.innerHTML = user_id + ":";
+    var content = document.createElement("div");
+    content.class = "msg_content";
+    content.innerHTML = msg;
+
+    new_message.appendChild(from_user);
+    new_message.appendChild(content);
+
+    var chat = document.getElementById("chat");
+    chat.appendChild(new_message);
+}

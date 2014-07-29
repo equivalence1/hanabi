@@ -37,7 +37,8 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("new_message") === 0) {
         var new_message = deserialize(msg.data, "message");
-        document.getElementById("chat").innerHTML += "<br>" + new_message;
+//        document.getElementById("chat").innerHTML += "<br>" + new_message;
+        add_message(new_message);
     }
 
     if (msg.data.indexOf("created") === 0) {
