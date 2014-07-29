@@ -90,7 +90,6 @@ class GameCreateHandler(webapp2.RequestHandler):
 
 
 class JoinGame(webapp2.RequestHandler):
-    
     def post(self):
         logging.info("JoinGame post")
 

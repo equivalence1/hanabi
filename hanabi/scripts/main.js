@@ -44,3 +44,7 @@ function submit() {
     sendMessage("/send_chat_message", "user_id=" + user_id + "&game_name=" + game_name + "&message=" + document.getElementById("message").value);
     document.getElementById("message").value = "";
 }
+
+function start() {
+    sendMessage("/game", "game_name" + game_name);
+}
