@@ -171,12 +171,13 @@ class SendChatMessage(webapp2.RequestHandler):
         logging.info("SendChatMessage post")
 
         game_name = self.request.get("game_name")
+        from_id = self.request.get("user_id")
         message = self.request.get("message")
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
         for user_id in game.user_id_list:
-            channel.send_message(user_id, "new_message?message=" + message)
+            channel.send_message(user_id, "new_message?fromid=" + from_id + "&message=" + message)
 
 
 class GameStartHandler(webapp2.RequestHandler):

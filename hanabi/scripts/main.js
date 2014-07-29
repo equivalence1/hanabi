@@ -49,15 +49,13 @@ function start_game() {
     sendMessage("/start_game", "game_name=" + game_name);
 }
 
-function add_message(msg) {
+function add_message(from_id, msg) {
     var new_message = document.createElement("div");
     new_message.setAttribute("class", "message_div");
-//    new_game.id = "room_name=" + name;
-//    new_game.name = name;
 
     var from_user = document.createElement("div");
     from_user.class = "msg_user";
-    from_user.innerHTML = user_id + ":";
+    from_user.innerHTML = from_id + ":";
     var content = document.createElement("div");
     content.class = "msg_content";
     content.innerHTML = msg;

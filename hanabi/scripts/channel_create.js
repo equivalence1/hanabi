@@ -21,9 +21,10 @@ function onOpened() {
 function deserialize(str, arg_name) {
     var start = str.indexOf(arg_name, str.indexOf("?")) + arg_name.length + 1;
     var end = str.indexOf("&", start);
+
     if (end == -1) end = str.length - 1;
 
-    return str.substr(start, end);
+    return str.substr(start, end - start);
 }
 
 function onMessage(msg) {
@@ -37,8 +38,8 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("new_message") === 0) {
         var new_message = deserialize(msg.data, "message");
-//        document.getElementById("chat").innerHTML += "<br>" + new_message;
-        add_message(new_message);
+        var from_id = deserialize(msg.data, "fromid");
+        add_message(from_id, new_message);
     }
 
     if (msg.data.indexOf("created") === 0) {
