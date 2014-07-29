@@ -153,6 +153,6 @@ p {
     border-radius: 3px;
 }
 
-.submit :hover {
+.submit:hover {
     background-color: #2E8B57;
 }
