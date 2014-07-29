@@ -174,3 +174,29 @@ p {
 #start:hover {
     background-color: #CD5555;
 }
+
+.message_div {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    background-color: white;
+    border-radius: 2px;
+    display: block;
+    overflow: visible;
+    line-height: 150%;
+    height: auto;
+    word-break: break-all;
+}
+
+.msg_user {
+    float: left;
+    margin-right: 10px;
+    font-family: cursive;
+    display: inline-block;
+    color: green;
+}
+
+.msg_content {
+    float: left;
+    display: inline-block;
+}
