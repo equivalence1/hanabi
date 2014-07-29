@@ -45,6 +45,6 @@ function submit() {
     document.getElementById("message").value = "";
 }
 
-function start() {
-    sendMessage("/game", "game_name" + game_name);
+function start_game() {
+    sendMessage("/start_game", "game_name=" + game_name);
 }
