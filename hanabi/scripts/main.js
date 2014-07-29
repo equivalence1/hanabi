@@ -4,7 +4,7 @@ function create_game() {
     game_name = document.getElementById("game_name").value.toString();
     var game_password = document.getElementById("password").value.toString();
 
-    sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password + "&user_id=" + user_id);
+    sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password + "&user_id=" + user_id + "&max_user_count=4");
 }
 
 function add_to_list(name) {

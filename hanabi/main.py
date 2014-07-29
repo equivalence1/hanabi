@@ -73,6 +73,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
         password = self.request.get("password")
         user_id = self.request.get("user_id")
+        max_user_count = self.request.get("max_user_count")
 
         games = Game.query(ancestor=game_key(game_name)).fetch()
         if (len(games) != 0):
@@ -84,19 +85,20 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.password = password
         game.user_id_list.append(user_id)
         game.seed = random.randint(0, (1 << 31) - 1)
+        game.max_user_count = int(max_user_count)
         game.put()
 
         channel.send_message(user_id, "created")
 
 
 class JoinGame(webapp2.RequestHandler):
-    
     def post(self):
         logging.info("JoinGame post")
 
         user_id = self.request.get("user_id")        
         game_name = self.request.get("game_name")
         entered_password = self.request.get("game_password")
+
 
         games = Game.query(ancestor=game_key(game_name)).fetch(1)
         if (len(games) != 1):
