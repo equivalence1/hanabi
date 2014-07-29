@@ -29,19 +29,20 @@ function deserialize(str, arg_name) {
 function onMessage(msg) {
     document.getElementById("last").innerHTML += "<br> msg: " + msg.data;
 
-    if (msg.data.indexOf("joined") == 0) {
+    if (msg.data.indexOf("joined") === 0) {
         game_name = deserialize(msg.data, "game_name");
         document.getElementById("last").innerHTML = msg.data;
         display_chat_room();
     }
 
-    if (msg.data.indexOf("new_message") == 0) {
+    if (msg.data.indexOf("new_message") === 0) {
         var new_message = deserialize(msg.data, "message");
         document.getElementById("chat").innerHTML += "<br>" + new_message;
     }
 
-    if (msg.data.indexOf("created") == 0) {
+    if (msg.data.indexOf("created") === 0) {
         display_chat_room();
+        document.getElementById("start").style.display = "";
     }
 }
 

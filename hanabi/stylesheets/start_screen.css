@@ -153,6 +153,24 @@ p {
     border-radius: 3px;
 }
 
-.submit :hover {
+#start {
+    position: relative;
+    margin-top: 3px;
+    margin-right: 3px;
+    margin-left: 10px;
+    height: 50px;
+    width: 100px;
+    text-align: center;
+    float: right;
+    display: inline-block;
+    border: 1px solid #CD5555;
+    border-radius: 3px;
+}
+
+.submit:hover {
     background-color: #2E8B57;
+}
+
+#start:hover {
+    background-color: #CD5555;
 }
