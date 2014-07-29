@@ -61,6 +61,9 @@ class Game(ndb.Model):
     password = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
     user_id_list = ndb.StringProperty(indexed=False, repeated=True)
+    seed = ndb.IntegerProperty(indexed=False)
+
+    max_user_count = ndb.IntegerProperty(indexed=False)
 
 
 class GameCreateHandler(webapp2.RequestHandler):
@@ -80,6 +83,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.name = game_name
         game.password = password
         game.user_id_list.append(user_id)
+        game.seed = random.randint(0, (1 << 31) - 1)
         game.put()
 
         channel.send_message(user_id, "created")
@@ -93,11 +97,22 @@ class JoinGame(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
         entered_password = self.request.get("game_password")
 
-        game = Game.query(ancestor=game_key(game_name)).fetch(1)[0]
+        games = Game.query(ancestor=game_key(game_name)).fetch(1)
+        if (len(games) != 1):
+            logging.info("Wrong game name " + game_name)
+            channel.send_message(user_id, "error?msg=Wrong game name")
+            return
+
+        game = games[0]
 
         if (entered_password != game.password):
             logging.info("Wrong password for " + game_name + ", entered: " + entered_password + ", real: " + game.password)
-            channel.send_message(user_id, "Wrong password")
+            channel.send_message(user_id, "error?msg=Wrong password")
+            return
+
+        if (game.max_user_count <= len(game.user_id_list)):
+            logging.info(game_name + " already full")
+            channel.send_message(user_id, "error?msg=game already full")
             return
 
         game.user_id_list.append(user_id)
