@@ -40,6 +40,21 @@ def game_key(game_name):
     return ndb.Key("Game", game_name)
 
 
+def game_state_msg_for_user(game, num):
+    msg = "start_game?"
+    msg += "life=" + str(game.game_state.life_count)
+    msg += "&hint=" + str(game.game_state.hint_count)
+    msg += "&whose_move=" + str(game.game_state.whose_move)
+    msg += "&your_position=" + str(num)
+    for user_num in range(len(game.user_id_list)):
+        if num != user_num:
+            msg += "&player" + str(user_num) + "cards="
+            for card in game.game_state.user_hands[user_num].cards:
+                msg += str(card.color) + str(card.value)
+
+    return msg
+
+
 class Card(ndb.Model):
     color = ndb.IntegerProperty()
     value = ndb.IntegerProperty()
@@ -204,8 +219,10 @@ class GameStartHandler(webapp2.RequestHandler):
         game.started = True
         game.put()
 
+        num = 0
         for user_id in game.user_id_list:
-            channel.send_message(user_id, "start_game")
+            channel.send_message(user_id, game_state_msg_for_user(game, num))
+            num += 1
 
 
 application = webapp2.WSGIApplication([
