@@ -3,7 +3,6 @@ socket.onopen = onOpened;
 socket.onmessage = onMessage;
 socket.onerror = onError;
 socket.onclose = onClose;
-var game_name;
 
 function sendMessage(path, opt_param) {
     path += '?g=' + "my_game";
@@ -33,11 +32,16 @@ function onMessage(msg) {
     if (msg.data.indexOf("joined") == 0) {
         game_name = deserialize(msg.data, "game_name");
         document.getElementById("last").innerHTML = msg.data;
+        display_chat_room();
     }
 
     if (msg.data.indexOf("new_message") == 0) {
         var new_message = deserialize(msg.data, "message");
         document.getElementById("chat").innerHTML += "<br>" + new_message;
+    }
+
+    if (msg.data.indexOf("created") == 0) {
+        display_chat_room();
     }
 }
 

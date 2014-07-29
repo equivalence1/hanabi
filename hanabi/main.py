@@ -60,7 +60,7 @@ class Game(ndb.Model):
     name = ndb.StringProperty(indexed=False)
     password = ndb.StringProperty(indexed=False)
     date = ndb.DateTimeProperty(auto_now_add=True)
-    user_list = ndb.StringProperty(indexed=False, repeated=True)
+    user_id_list = ndb.StringProperty(indexed=False, repeated=True)
 
 
 class GameCreateHandler(webapp2.RequestHandler):
@@ -69,6 +69,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         
         game_name = self.request.get("game_name")
         password = self.request.get("password")
+        user_id = self.request.get("user_id")
 
         games = Game.query(ancestor=game_key(game_name)).fetch()
         if (len(games) != 0):
@@ -78,7 +79,10 @@ class GameCreateHandler(webapp2.RequestHandler):
 
         game.name = game_name
         game.password = password
+        game.user_id_list.append(user_id)
         game.put()
+
+        channel.send_message(user_id, "created")
 
 
 class JoinGame(webapp2.RequestHandler):
@@ -96,10 +100,10 @@ class JoinGame(webapp2.RequestHandler):
             channel.send_message(user_id, "Wrong password")
             return
 
-        game.user_list.append(user_id)
+        game.user_id_list.append(user_id)
         game.put()
         logging.info(user_id + " successfully joined into game named " + game_name)
-        logging.info("Now in game are: " + ', '.join(game.user_list))
+        logging.info("Now in game are: " + ', '.join(game.user_id_list))
         channel.send_message(user_id, "joined?game_name=" + game_name)
 
 
@@ -112,8 +116,8 @@ class SendChatMessage(webapp2.RequestHandler):
 
         game = Game.query(ancestor=game_key(game_name)).fetch(1)[0]
 
-        for user in game.user_list:
-            channel.send_message(user, "new_message?message=" + message)
+        for user_id in game.user_id_list:
+            channel.send_message(user_id, "new_message?message=" + message)
 
 
 application = webapp2.WSGIApplication([
