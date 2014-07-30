@@ -86,6 +86,7 @@ class Game(ndb.Model):
     started = ndb.BooleanProperty(indexed=True, default=False)
     full = ndb.BooleanProperty(indexed=True)
     user_count = ndb.IntegerProperty(indexed=True, default=0)
+    locked = ndb.BooleanProperty(indexed=True, default=False)
 
     max_user_count = ndb.IntegerProperty()
 
@@ -114,7 +115,7 @@ class GameCreateHandler(webapp2.RequestHandler):
     def post(self):
         logging.info("GameCreateHandler post")
         
-        game_name = self.request.get("game_name")
+        game_name = self.request.get("game_name");
         password = self.request.get("password")
         user_id = self.request.get("user_id")
         max_user_count = self.request.get("max_user_count")
@@ -134,6 +135,8 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.max_user_count = int(max_user_count)
         game.started = False
         game.full = False
+        logging.info(len(game.password) != 0)
+        game.locked = (len(game.password) != 0)
         game.put()
 
         users_str = "&users_list=" + user_id
@@ -173,7 +176,7 @@ class JoinGame(webapp2.RequestHandler):
 
         game.user_id_list.append(user_id)
         game.user_count += 1
-        if game.user_count >= game.max_user_count:
+        if (game.user_count >= game.max_user_count):
             game.full = True
 
         game.put()

@@ -33,7 +33,12 @@
                     <div class="game_list" id="game_list" style="overflow-y: scroll">
                         {% for game in games %}
                             <script>
-                                add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }}");
+                                var locked = "{{ game.locked }}";
+                                if (locked === "True") {
+                                    add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }} \uD83D\uDD12");
+                                } else {
+                                    add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }}");
+                                }
                             </script>
                         {% endfor %}
                     </div>

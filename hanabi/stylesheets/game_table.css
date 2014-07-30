@@ -12,7 +12,7 @@
     background-color: #2E8B57;
     clear: left;
     float: left;
-    #display: inline;
+    display: inline;
 }
 
 #table {
@@ -28,7 +28,7 @@
     width: 100px;
     height: 500px;
     background-color: aqua;
-    #display: inline;
+    display: inline;
     clear: right;
     float: right;
 }
