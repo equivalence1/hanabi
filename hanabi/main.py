@@ -16,7 +16,6 @@
 #
 
 import os
-import urllib
 import logging
 import random
 
@@ -46,9 +45,12 @@ def game_state_msg_for_user(game, num):
     msg += "&hint=" + str(game.game_state.hint_count)
     msg += "&whose_move=" + str(game.game_state.whose_move)
     msg += "&your_position=" + str(num)
-    for user_num in range(len(game.user_id_list)):
+    msg += "&users_count=" + str(game.user_count)
+
+    for user_num in range(game.user_count):
         if num != user_num:
-            msg += "&player" + str(user_num) + "cards="
+            msg += "&user" + str(user_num) + "id=" + game.user_id_list[num]
+            msg += "&user" + str(user_num) + "cards="
             for card in game.game_state.user_hands[user_num].cards:
                 msg += str(card.color) + str(card.value)
 
@@ -81,7 +83,9 @@ class Game(ndb.Model):
     password = ndb.StringProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
     user_id_list = ndb.StringProperty(repeated=True)
-    started = ndb.BooleanProperty(indexed=True)
+    started = ndb.BooleanProperty(indexed=True, default=False)
+    full = ndb.BooleanProperty(indexed=True)
+    user_count = ndb.IntegerProperty(indexed=True, default=0)
 
     max_user_count = ndb.IntegerProperty()
 
@@ -90,14 +94,14 @@ class Game(ndb.Model):
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        user_id = str(random.randint(1, 100000))
+        user_id = str(random.randint(0, (1 << 31) - 1))
         user = users.get_current_user()
         
         if not user:
             self.redirect(users.create_login_url(self.request.uri))
             return
 
-        games_query = Game.query(Game.started == False).order(-Game.date)
+        games_query = Game.query(Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
         token = channel.create_channel(user_id)
@@ -126,11 +130,14 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.name = game_name
         game.password = password
         game.user_id_list.append(user_id)
+        game.user_count = 1
         game.max_user_count = int(max_user_count)
         game.started = False
+        game.full = False
         game.put()
 
-        channel.send_message(user_id, "created")
+        users_str = "&users_list=" + user_id
+        channel.send_message(user_id, "created?&users_count=" + str(game.user_count) + users_str)
 
 
 class JoinGame(webapp2.RequestHandler):
@@ -154,16 +161,32 @@ class JoinGame(webapp2.RequestHandler):
             channel.send_message(user_id, "error?msg=Wrong password")
             return
 
-        if (game.max_user_count <= len(game.user_id_list)):
+        if (game.max_user_count <= game.user_count):
             logging.info(game_name + " already full")
             channel.send_message(user_id, "error?msg=game already full")
             return
 
+        if (user_id in game.user_id_list):
+            logging.info(user_id + " already in " + game_name)
+            channel.send_message(user_id, "error?msg=you are already in this game")
+            pass
+
         game.user_id_list.append(user_id)
+        game.user_count += 1
+        if game.user_count >= game.max_user_count:
+            game.full = True
+
         game.put()
+
         logging.info(user_id + " successfully joined into game named " + game_name)
         logging.info("Now in game are: " + ', '.join(game.user_id_list))
-        channel.send_message(user_id, "joined?game_name=" + game_name + "&started=" + str(game.started))
+        users_str = "&users_list=" + "<br>".join([user for user in game.user_id_list])
+        channel.send_message(user_id, "joined?game_name=" + game_name + "&started=" + str(game.started)
+                                      + "&users_count=" + str(game.user_count) + users_str)
+
+        for user in game.user_id_list:
+            if (user != user_id):
+                channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
 
 
 class SendChatMessage(webapp2.RequestHandler):
@@ -177,7 +200,7 @@ class SendChatMessage(webapp2.RequestHandler):
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
         for user_id in game.user_id_list:
-            channel.send_message(user_id, "new_message?fromid=" + from_id + "&message=" + message)
+            channel.send_message(user_id, "new_message?from_id=" + from_id + "&message=" + message)
 
 
 class GameStartHandler(webapp2.RequestHandler):
@@ -187,7 +210,6 @@ class GameStartHandler(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
-        game = game.key.get()
 
         game.game_state = GameState()
 
@@ -207,15 +229,15 @@ class GameStartHandler(webapp2.RequestHandler):
         game.game_state.hint_count = 8
 
         game.game_state.user_hands = []
-        for hand_num in range(len(game.user_id_list)):
+        for hand_num in range(game.user_count):
             hand = Hand()
-            for card_num in range(card_amount_in_hand_by_user_count[len(game.user_id_list)]):
+            for card_num in range(card_amount_in_hand_by_user_count[game.user_count]):
                 hand.cards.append(game.game_state.deck.pop())
 
             hand.put()
             game.game_state.user_hands.append(hand)
 
-        game.game_state.whose_move = random.randint(0, len(game.user_id_list) - 1)
+        game.game_state.whose_move = random.randint(0, game.user_count - 1)
 
         game.started = True
         game.put()

@@ -7,7 +7,7 @@ function create_game() {
     sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password + "&user_id=" + user_id + "&max_user_count=4");
 }
 
-function add_to_list(name) {
+function add_to_list(name, fill) {
     var new_game = document.createElement("div");
     new_game.setAttribute("class", "game_div");
     new_game.id = "room_name=" + name;
@@ -15,7 +15,7 @@ function add_to_list(name) {
     
     var game_name = document.createElement("div");
     game_name.setAttribute("class", "game_name");
-    game_name.innerHTML = name;
+    game_name.innerHTML = name + "    " + fill;
 
     var join_button = document.createElement("div");
     join_button.setAttribute("class", "join_button");
@@ -35,9 +35,23 @@ function join_room() {
     sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
 }
 
-function display_chat_room() {
+function hide_all() {
     document.getElementById("main_content").style.display = "none";
+    document.getElementById("chat_room").style.display = "none";
+    document.getElementById("start").style.display = "none";
+    document.getElementById("game_table").style.display = "none";
+}
+
+function display_chat_room() {
     document.getElementById("chat_room").style.display = "";
+}
+
+function display_start_game_button() {
+    document.getElementById("start").style.display = "";
+}
+
+function display_game_table() {
+    document.getElementById("game_table").style.display = "";
 }
 
 function submit() {
@@ -65,4 +79,8 @@ function add_message(from_id, msg) {
 
     var chat = document.getElementById("chat");
     chat.appendChild(new_message);
+}
+
+function update_online_list(count, user_str) {
+    document.getElementById("online_list").innerHTML = "Online(" + count + "):<br>" + user_str;
 }

@@ -1,0 +1,114 @@
+.message_create {
+    height: 25%;
+    width: 100%;
+    background-color: #CCCCFF;
+    border-radius: 3px;
+    clear: both;
+}
+
+.chat {
+    position: relative;
+    height: 70%;
+    width: 80%;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    background-color: #AAAAAA;
+    overflow-y: scroll;
+    clear: left;
+    display: block;
+    float: left;
+}
+
+.online_list {
+    position: relative;
+    height: 70%;
+    width: 19%;
+    margin-top: 3px;
+    margin-bottom: 5px;
+    border-radius: 3px;
+    background-color: #C9C9C9;
+    overflow-y: scroll;
+    clear: right;
+    display: block;
+    float: right;
+}
+
+#chat_room {
+    position: relative;
+    height: 80%;
+}
+
+#message {
+    position: relative;
+    height: 90%;
+    width: 80%;
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-left: 3px;
+    margin-right: 10px;
+    float: left;
+    display: inline-block;
+}
+
+.submit {
+    margin-top: 3px;
+    margin-bottom: 3px;
+    margin-right: 3px;
+    margin-left: 10px;
+    height: 25px;
+    width: 100px;
+    text-align: center;
+    float: right;
+    display: inline-block;
+    border: 1px solid #2E8B57;
+    border-radius: 3px;
+}
+
+#start {
+    position: relative;
+    margin-top: 3px;
+    margin-right: 3px;
+    margin-left: 10px;
+    height: 50px;
+    width: 100px;
+    text-align: center;
+    float: right;
+    display: inline-block;
+    border: 1px solid #CD5555;
+    border-radius: 3px;
+}
+
+.submit:hover {
+    background-color: #2E8B57;
+}
+
+#start:hover {
+    background-color: #CD5555;
+}
+
+.message_div {
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+    background-color: white;
+    border-radius: 2px;
+    display: block;
+    overflow: visible;
+    line-height: 150%;
+    height: auto;
+    word-break: break-all;
+}
+
+.msg_user {
+    float: left;
+    margin-right: 10px;
+    font-family: cursive;
+    display: inline-block;
+    color: green;
+}
+
+.msg_content {
+    float: left;
+    display: inline-block;
+}

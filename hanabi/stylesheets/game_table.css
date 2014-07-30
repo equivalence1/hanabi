@@ -1,0 +1,42 @@
+#upper_hand {
+    position: relative;
+    height: 100px;
+    background-color: #EE55EE;
+    display: block;
+}
+
+#left_hand {
+    position: relative;
+    width: 100px;
+    height: 500px;
+    background-color: #2E8B57;
+    clear: left;
+    float: left;
+    #display: inline;
+}
+
+#table {
+    position: relative;
+    display: inline;
+    background-color: orangered;
+    width: 400px;
+    height: 500px;
+}
+
+#right_hand {
+    position: relative;
+    width: 100px;
+    height: 500px;
+    background-color: aqua;
+    #display: inline;
+    clear: right;
+    float: right;
+}
+
+#down_hand {
+    position: relative;
+    height: 100px;
+    background-color: #CC3399;
+    clear: both;
+    display: block;
+}

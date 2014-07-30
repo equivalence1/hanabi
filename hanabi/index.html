@@ -4,6 +4,8 @@
 
         <title> Hanabi </title>
         <link rel="stylesheet" type="text/css" href="stylesheets/start_screen.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/chat.css">
+        <link rel="stylesheet" type="text/css" href="stylesheets/game_table.css">
         <link href="http://s3.amazonaws.com/codecademy-content/courses/ltp/css/shift.css" rel="stylesheet">
 
     </head>
@@ -31,7 +33,7 @@
                     <div class="game_list" id="game_list" style="overflow-y: scroll">
                         {% for game in games %}
                             <script>
-                                add_to_list("{{ game.name }}");
+                                add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }}");
                             </script>
                         {% endfor %}
                     </div>
@@ -68,10 +70,36 @@
                 <p>CHAT</p>
             </div>
 
+            <div class="online_list" id="online_list">
+
+            </div>
+
             <div class="message_create">
                 <textarea id="message"></textarea>
                 <button class="submit" value="submit" onclick="submit()">Submit</button>
                 <button id="start" value="submit" onclick="start_game()" style="display: none">Start</button>
+            </div>
+        </div>
+
+        <div id="game_table" style="display: none">
+            <div id="upper_hand">
+1
+            </div>
+
+            <div id="left_hand">
+2
+            </div>
+
+            <div id="table">
+3
+            </div>
+
+            <div id="right_hand">
+4
+            </div>
+
+            <div id="down_hand">
+5
             </div>
         </div>
 
