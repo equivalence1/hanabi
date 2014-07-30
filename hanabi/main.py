@@ -173,7 +173,7 @@ class JoinGame(webapp2.RequestHandler):
 
         game.user_id_list.append(user_id)
         game.user_count += 1
-        if game.user_count >= game.max_user_count:
+        if (game.user_count >= game.max_user_count):
             game.full = True
 
         game.put()
@@ -218,7 +218,6 @@ class GameStartHandler(webapp2.RequestHandler):
             for value in range(1, 6):
                 for count in range(0, card_amount_in_deck_by_value[value]):
                     card = Card(color=color, value=value)
-                    card.put()
                     game.game_state.deck.append(card)
 
         random.shuffle(game.game_state.deck)
@@ -234,7 +233,6 @@ class GameStartHandler(webapp2.RequestHandler):
             for card_num in range(card_amount_in_hand_by_user_count[game.user_count]):
                 hand.cards.append(game.game_state.deck.pop())
 
-            hand.put()
             game.game_state.user_hands.append(hand)
 
         game.game_state.whose_move = random.randint(0, game.user_count - 1)
