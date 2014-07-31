@@ -23,7 +23,23 @@ function update_game_table(game_state) {
     }
 
     var table = document.getElementById("table");
-    
+    table.innerHTML = "";
+
+    for (i = 0; i < 3 - game_state.life; i++) {
+        var dead_life = document.createElement("div");
+        dead_life.setAttribute("class", "dead_life_chip");
+        dead_life.setAttribute("left", (450 - (3 - i) * 10).toString() + "px");
+        table.appendChild(dead_life);
+    }
+
+    for (; i < 3; i++) {
+        var alive_life = document.createElement("div");
+        alive_life.setAttribute("class", "alive_life_chip");
+        alive_life.setAttribute("style", "left:" + ((450 - (3 - i) * 10).toString() + "px"));
+        table.appendChild(alive_life);
+    }
+
+
 }
 
 function add_card_to_hand(hand, card) {
