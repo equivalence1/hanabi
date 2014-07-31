@@ -53,16 +53,17 @@ body {
 }
 
 p {
-    font-family: Jokerman, cursive;
+    font-family: cursive;
 }
 
 .game_list {
     background-color: #DDDDDD;
-    margin: auto;
     height: 220px;
     width: 360px;
     position: relative;
     border-radius: 2px;
+    margin-bottom: 10px;
+    margin-left: 16px;
 }
 
 .game_div {
@@ -100,4 +101,23 @@ p {
 
 .room_list h3 {
     margin-left: 16px;
+    display: inline-block;
+}
+
+.room_list_head {
+    display: block;
+    position: relative;
+    clear: both;
+}
+
+#refresh_btn {
+    background-image: url(../images/refreshthumb.png);
+    height: 20px;
+    width: 20px;
+/*    background-color: black;*/
+    display: inline-block;
+    float: right;
+    margin-right: 16px;
+    margin-top: 20px;
+    border-radius: 10px;
 }

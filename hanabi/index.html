@@ -3,6 +3,7 @@
     <head>
 
         <title> Hanabi </title>
+        <meta charset="utf-8">
         <link rel="stylesheet" type="text/css" href="stylesheets/start_screen.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/chat.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/game_table.css">
@@ -18,6 +19,7 @@
         </script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
+        <script type="text/javascript" src="scripts/game.js"></script>
 
         <div class="nav">
            <div class="container">
@@ -29,9 +31,13 @@
 
             <div class="room_list">
                 <div class="container">
-                    <h3> Room list: </h3>
+                    <div class"room_list_head">
+                        <h3> Room list: </h3>
+                        <div id="refresh_btn" title="refresh" onclick="refresh()">
+                        </div>
+                    </div>
                     <div class="game_list" id="game_list" style="overflow-y: scroll">
-                        {% for game in games %}
+                        <!--{% for game in games %}
                             <script>
                                 var locked = "{{ game.locked }}";
                                 if (locked === "True") {
@@ -40,7 +46,10 @@
                                     add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }}");
                                 }
                             </script>
-                        {% endfor %}
+                        {% endfor %}-->
+                        <script>
+                            refresh();
+                        </script>
                     </div>
                 </div>
             </div>
@@ -87,28 +96,28 @@
         </div>
 
         <div id="game_table" style="display: none">
-            <div id="upper_hand">
-1
-            </div>
-
             <div id="left_hand">
-2
+
             </div>
 
-            <div id="table">
-3
+            <div id="upper_hand">
+
             </div>
 
             <div id="right_hand">
-4
+
+            </div>
+
+            <div id="table">
+
             </div>
 
             <div id="down_hand">
-5
+
             </div>
         </div>
 
-        <p id="last"></p>
+        <p id="last" style="clear: both"></p>
 
     </body>
 </html>

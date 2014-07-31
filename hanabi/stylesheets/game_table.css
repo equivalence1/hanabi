@@ -1,12 +1,17 @@
 #upper_hand {
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 100px;
     height: 100px;
+    width: 600px;
     background-color: #EE55EE;
-    display: block;
+    display: inline;
 }
 
 #left_hand {
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 0px;
     width: 100px;
     height: 500px;
     background-color: #2E8B57;
@@ -16,27 +21,98 @@
 }
 
 #table {
-    position: relative;
-    display: inline;
+    position: absolute;
+    top: 100px;
+    left: 100px;
+    display: inline-block;
     background-color: orangered;
-    width: 400px;
-    height: 500px;
+    width: 600px;
+    height: 300px;
 }
 
 #right_hand {
-    position: relative;
+    position: absolute;
+    top: 0px;
+    left: 700px;
     width: 100px;
     height: 500px;
     background-color: aqua;
-    display: inline;
-    clear: right;
     float: right;
+    display: inline;
 }
 
 #down_hand {
-    position: relative;
+    position: absolute;
+    top: 400px;
+    left: 100px;
     height: 100px;
     background-color: #CC3399;
+    display: inline;
+    width: 600px;
+}
+
+.card {
+    position: relative;
+    height: 80px;
+    width: 60px;
+    display: inline-block;
+    font-family: Moonlight;
+    font-size: 36pt;
+    background-color: darkblue;
+    border: 2px solid black;
+    border-radius: 5px;
+    margin: 5px;
+}
+
+.red_card {
+    color: red;
+}
+
+.green_card {
+    color: limegreen;
+}
+
+.blue_card {
+    color: blue;
+}
+
+.yellow_card {
+    color: yellow;
+}
+
+.white_card {
+    color: whitesmoke;
+}
+
+.undefined_card {
+    color: black;
+}
+
+#game_table {
+    position: relative;
+    height: 550px;
+    width: 800px;
     clear: both;
-    display: block;
+}
+
+.dead_life_chip {
+    position: relative;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    border: 5px solid black;
+    border-radius: 40px;
+    display: inline-block;
+    background-color: darkgrey;
+}
+
+.alive_life_chip {
+    position: relative;
+    top: 20px;
+    width: 40px;
+    height: 40px;
+    border: 5px solid black;
+    border-radius: 40px;
+    display: inline-block;
+    background-color: lightgreen;
 }
