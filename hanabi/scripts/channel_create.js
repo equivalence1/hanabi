@@ -100,6 +100,22 @@ function onMessage(msg) {
             }
         }
 
+        game_state.solitaire = [];
+        var solitaire_str = deserialize(msg.data, "solitaire");
+        for (i = 0; i < solitaire_str.length / 2; i++) {
+            game_state.solitaire[i] = {};
+            game_state.solitaire[i].color = parseInt(solitaire_str[i * 2]);
+            game_state.solitaire[i].value = parseInt(solitaire_str[i * 2 + 1]);
+        }
+
+        game_state.junk = [];
+        var junk_str = deserialize(msg.data, "solitaire");
+        for (i = 0; i < junk_str.length / 2; i++) {
+            game_state.junk[i] = {};
+            game_state.junk[i].color = parseInt(junk_str[i * 2]);
+            game_state.junk[i].value = parseInt(junk_str[i * 2 + 1]);
+        }
+
         display_game_table();
         update_game_table(game_state);
     }
@@ -107,10 +123,10 @@ function onMessage(msg) {
     if (msg.data.indexOf("add_game_to_list") == 0) {
         var N = deserialize(msg.data, "num");
         for (i = 0; i < N; i++) {
-            var game_name = deserialize(msg.data, "game_name" + i);
+            var game_name_i = deserialize(msg.data, "game_name" + i);
             var users_count = deserialize(msg.data, "users_count" + i);
             var max_users_count = deserialize(msg.data, "max_users_count" + i);
-            add_to_list(game_name, users_count + "/" + max_users_count);
+            add_to_list(game_name_i, users_count + "/" + max_users_count);
         }
     }
 }
