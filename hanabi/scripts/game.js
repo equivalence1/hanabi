@@ -21,6 +21,9 @@ function update_game_table(game_state) {
         for (var j = 0; j < card_amount_in_hand_by_user_count[game_state.users_count]; j++)
             add_card_to_hand(hand, game_state.hand[i][j]);
     }
+
+    var table = document.getElementById("table");
+    
 }
 
 function add_card_to_hand(hand, card) {
