@@ -40,3 +40,39 @@
     clear: both;
     display: block;
 }
+
+.card {
+    position: relative;
+    height: 80px;
+    width: 60px;
+    display: inline-block;
+    font-family: Moonlight;
+    font-size: 36pt;
+    background-color: darkblue;
+    border: 2px solid black;
+    border-radius: 5px;
+}
+
+.red_card {
+    color: red;
+}
+
+.green_card {
+    color: limegreen;
+}
+
+.blue_card {
+    color: blue;
+}
+
+.yellow_card {
+    color: yellow;
+}
+
+.white_card {
+    color: whitesmoke;
+}
+
+.undefined_card {
+    color: black;
+}

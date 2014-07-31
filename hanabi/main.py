@@ -120,7 +120,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         max_user_count = self.request.get("max_user_count")
 
         games = Game.query(Game.name == game_name).fetch()
-        if (len(games) != 0):
+        if len(games) != 0:
             logging.info("Game with name " + game_name + " already exists")
             channel.send_message(user_id, "error?msg=Game with name " + game_name + " already exists")
             return
@@ -149,31 +149,31 @@ class JoinGame(webapp2.RequestHandler):
         entered_password = self.request.get("game_password")
 
         games = Game.query(Game.name == game_name).fetch(1)
-        if (len(games) != 1):
+        if len(games) != 1:
             logging.info("Wrong game name " + game_name)
             channel.send_message(user_id, "error?msg=Wrong game name")
             return
 
         game = games[0]
 
-        if (entered_password != game.password):
+        if entered_password != game.password:
             logging.info("Wrong password for " + game_name + ", entered: " + entered_password + ", real: " + game.password)
             channel.send_message(user_id, "error?msg=Wrong password")
             return
 
-        if (game.max_user_count <= game.user_count):
+        if game.max_user_count <= game.user_count:
             logging.info(game_name + " already full")
             channel.send_message(user_id, "error?msg=game already full")
             return
 
-        if (user_id in game.user_id_list):
+        if user_id in game.user_id_list:
             logging.info(user_id + " already in " + game_name)
             channel.send_message(user_id, "error?msg=you are already in this game")
             pass
 
         game.user_id_list.append(user_id)
         game.user_count += 1
-        if (game.user_count >= game.max_user_count):
+        if game.user_count >= game.max_user_count:
             game.full = True
 
         game.put()
@@ -185,7 +185,7 @@ class JoinGame(webapp2.RequestHandler):
                                       + "&users_count=" + str(game.user_count) + users_str)
 
         for user in game.user_id_list:
-            if (user != user_id):
+            if user != user_id:
                 channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
 
 
@@ -210,6 +210,12 @@ class GameStartHandler(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
+
+        if game.user_count < 2:
+            logging.info("To small room for start")
+            host_id = self.request.get("user_id")
+            channel.send_message(host_id, "error?msg=Not enough users to start")
+            return
 
         game.game_state = GameState()
 
