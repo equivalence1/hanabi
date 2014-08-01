@@ -107,10 +107,10 @@ function onMessage(msg) {
     if (msg.data.indexOf("add_game_to_list") == 0) {
         var N = deserialize(msg.data, "num");
         for (i = 0; i < N; i++) {
-            var game_name = deserialize(msg.data, "game_name" + i);
+            var game_name_i = deserialize(msg.data, "game_name" + i);
             var users_count = deserialize(msg.data, "users_count" + i);
             var max_users_count = deserialize(msg.data, "max_users_count" + i);
-            add_to_list(game_name, users_count + "/" + max_users_count);
+            add_to_list(game_name_i, users_count + "/" + max_users_count);
         }
     }
 }

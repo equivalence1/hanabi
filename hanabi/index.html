@@ -4,10 +4,11 @@
 
         <title> Hanabi </title>
         <meta charset="utf-8">
+        <script type="text/javascript" src="scripts/jquery-2.0.3.js"></script>
         <link rel="stylesheet" type="text/css" href="stylesheets/start_screen.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/chat.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/game_table.css">
-        <link href="http://s3.amazonaws.com/codecademy-content/courses/ltp/css/shift.css" rel="stylesheet">
+        <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
     </head>
 
@@ -20,33 +21,57 @@
         <script type="text/javascript" src="scripts/channel_create.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
         <script type="text/javascript" src="scripts/game.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
-        <div class="nav">
-           <div class="container">
-               <h2 id="hanabi_online"> Hanabi </h2>
-           </div>
+        <div class="modal fade" id="RulesModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="false">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <button type="button" class="close" data-dismiss="modal">
+                            <span aria-hidden="true">&times;</span><span class="sr-only">Close</span>                        
+                        </button>
+                        <h4 class="modal-title" id="ModalLabel"> Hanabi rules </h4>
+                    </div>
+                    
+                    <div class="modal-body">
+                        <p>Here will be rules</p>
+                    </div>
+
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" data-dismiss="modal">Got it!</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar navbar-default" role="navigation">
+            <div class="container-fluid">
+                <div class="navbar-header">
+                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
+                        <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                    </button>
+                    <a class="navbar-brand" href="/">Hanabi</a>
+                </div>
+
+                <ul class="nav navbar-nav navbar-right">
+                    <li><a href="#" data-toggle="modal" data-target="#RulesModal">Rules</a></li>
+                </ul>
+            </div>
         </div>
 
         <div id="main_content">
 
             <div class="room_list">
-                <div class="container">
+                <div class="container1">
                     <div class"room_list_head">
                         <h3> Room list: </h3>
                         <div id="refresh_btn" title="refresh" onclick="refresh()">
                         </div>
                     </div>
                     <div class="game_list" id="game_list" style="overflow-y: scroll">
-                        <!--{% for game in games %}
-                            <script>
-                                var locked = "{{ game.locked }}";
-                                if (locked === "True") {
-                                    add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }} \uD83D\uDD12");
-                                } else {
-                                    add_to_list("{{ game.name }}", "{{ game.user_count }}/{{ game.max_user_count }}");
-                                }
-                            </script>
-                        {% endfor %}-->
                         <script>
                             refresh();
                         </script>
@@ -55,7 +80,7 @@
             </div>
 
             <div class="main_menu">
-                <div class="container">
+                <div class="container1">
                     <div class="game_create">
                         <h3> Create your own game! </h3>
 
@@ -72,7 +97,7 @@
             </div>
 
             <div class="friend_zone">
-                <div class="container">
+                <div class="container1">
                     <p> Friends are going to be here </p>
                 </div>
             </div>
