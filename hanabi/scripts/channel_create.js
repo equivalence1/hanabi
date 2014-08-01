@@ -126,7 +126,8 @@ function onMessage(msg) {
             var game_name_i = deserialize(msg.data, "game_name" + i);
             var users_count = deserialize(msg.data, "users_count" + i);
             var max_users_count = deserialize(msg.data, "max_users_count" + i);
-            add_to_list(game_name_i, users_count + "/" + max_users_count);
+            var locked = deserialize(msg.data, "locked" + i);
+            add_to_list(game_name_i, users_count + "/" + max_users_count, locked);
         }
     }
 }

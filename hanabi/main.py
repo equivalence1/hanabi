@@ -313,7 +313,8 @@ class GameListRefreshHandler(webapp2.RequestHandler):
         for game in games:
             param_string += "&game_name" + str(num) + "=" + game.name +\
             "&users_count" + str(num) + "=" + str(game.user_count) +\
-            "&max_users_count" + str(num) + "=" + str(game.max_user_count)
+            "&max_users_count" + str(num) + "=" + str(game.max_user_count) +\
+            "&locked" + str(num) + "=" + str(game.locked)
 
             num += 1
 

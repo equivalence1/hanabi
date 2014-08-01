@@ -58,7 +58,7 @@ function add_message(from_id, msg) {
     chat.appendChild(new_message);
 }
 
-function add_to_list(name, fill) {
+function add_to_list(name, fill, locked) {
     var new_game = document.createElement("div");
     new_game.setAttribute("class", "game_div");
     new_game.id = "room_name=" + name;
@@ -73,9 +73,23 @@ function add_to_list(name, fill) {
     join_button.innerHTML = "join";
     join_button.setAttribute("room_name", name);
     join_button.onclick = join_room;
+        join_button.setAttribute("data-toggle", "tooltip");
+        join_button.setAttribute("data-placement", "top");
+        join_button.setAttribute("title", "This room has password");
 
     new_game.appendChild(game_name);
     new_game.appendChild(join_button);
+
+    if (locked.toString() === "True") {
+        var span = document.createElement("span");
+        span.setAttribute("class", "glyphicon glyphicon-lock");
+        span.setAttribute("style", "float: right; margin-top: 5px");
+        span.setAttribute("data-toggle", "tooltip");
+        span.setAttribute("data-placement", "top");
+        span.setAttribute("title", "This room has password");
+
+        new_game.appendChild(span);
+    }        
 
     var room_list = document.getElementById("game_list");
     room_list.appendChild(new_game);

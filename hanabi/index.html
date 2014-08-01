@@ -5,6 +5,7 @@
         <title> Hanabi </title>
         <meta charset="utf-8">
         <script type="text/javascript" src="scripts/jquery-2.0.3.js"></script>
+        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
         <link rel="stylesheet" type="text/css" href="stylesheets/start_screen.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/chat.css">
         <link rel="stylesheet" type="text/css" href="stylesheets/game_table.css">
@@ -15,13 +16,14 @@
     <body>
         <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
+            $('#crtbtn').tooltip();
+            $('.btn').tooltip();
             var channel = new goog.appengine.Channel('{{ token }}');
             var user_id = "{{ user_id }}";
         </script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
         <script type="text/javascript" src="scripts/main.js"></script>
         <script type="text/javascript" src="scripts/game.js"></script>
-        <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 
         <div class="modal fade" id="RulesModal" tabindex="-1" role="dialog" aria-labelledby="ModalLabel" aria-hidden="false">
             <div class="modal-dialog">
@@ -44,7 +46,7 @@
             </div>
         </div>
 
-        <div class="navbar navbar-default" role="navigation">
+        <div class="navbar navbar-default" role="navigation" style="top: -2px">
             <div class="container-fluid">
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#bs-example-navbar-collapse-1">
@@ -88,7 +90,8 @@
                             <br>
                             <input id="password" type="text">
                             <br>
-                            <input id="game_create" type="submit" value="Create Game" onclick="create_game()">
+                            <button type="button" class="btn btn-success" onclick="create_game()" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Create Game</button>
+                            <button id="crtbtn" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Tooltip on top</button>
                         </div>
 
                     </div>
