@@ -275,7 +275,7 @@ class GameStartHandler(webapp2.RequestHandler):
 
         game.game_state.solitaire = []
         game.game_state.junk = []
-        game.game_state.life_count = 1
+        game.game_state.life_count = 3
         game.game_state.hint_count = 8
 
         game.game_state.user_hands = []
