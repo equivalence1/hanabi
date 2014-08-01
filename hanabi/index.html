@@ -11,14 +11,18 @@
         <link rel="stylesheet" type="text/css" href="stylesheets/game_table.css">
         <link rel="stylesheet" type="text/css" href="//maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 
+        <script type="text/javascript">
+            $(function() {
+                $(".glyphicon").tooltip();
+            });
+        </script>
+
     </head>
 
     <body>
         <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
-            $('#crtbtn').tooltip();
-            $('.btn').tooltip();
-            var channel = new goog.appengine.Channel('{{ token }}');
+            var channel = new goog.appengine.Channel("{{ token }}");
             var user_id = "{{ user_id }}";
         </script>
         <script type="text/javascript" src="scripts/channel_create.js"></script>
@@ -90,8 +94,7 @@
                             <br>
                             <input id="password" type="text">
                             <br>
-                            <button type="button" class="btn btn-success" onclick="create_game()" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Create Game</button>
-                            <button id="crtbtn" type="button" class="btn btn-default" data-toggle="tooltip" data-placement="top" title="Tooltip on top">Tooltip on top</button>
+                            <button type="button" class="btn btn-success" onclick="create_game()">Create Game</button>
                         </div>
 
                     </div>
