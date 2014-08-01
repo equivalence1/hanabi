@@ -100,6 +100,22 @@ function onMessage(msg) {
             }
         }
 
+        game_state.solitaire = [];
+        var solitaire_str = deserialize(msg.data, "solitaire");
+        for (i = 0; i < solitaire_str.length / 2; i++) {
+            game_state.solitaire[i] = {};
+            game_state.solitaire[i].color = parseInt(solitaire_str[i * 2]);
+            game_state.solitaire[i].value = parseInt(solitaire_str[i * 2 + 1]);
+        }
+
+        game_state.junk = [];
+        var junk_str = deserialize(msg.data, "solitaire");
+        for (i = 0; i < junk_str.length / 2; i++) {
+            game_state.junk[i] = {};
+            game_state.junk[i].color = parseInt(junk_str[i * 2]);
+            game_state.junk[i].value = parseInt(junk_str[i * 2 + 1]);
+        }
+
         display_game_table();
         update_game_table(game_state);
     }

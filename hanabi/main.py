@@ -54,6 +54,14 @@ def game_state_msg_for_user(game, num):
             for card in game.game_state.user_hands[user_num].cards:
                 msg += str(card.color) + str(card.value)
 
+    msg += "&solitaire="
+    for card in game.game_state.solitaire:
+        msg += str(card.color) + str(card.value)
+
+    msg += "&junk="
+    for card in game.game_state.junk:
+        msg += str(card.color) + str(card.value)
+
     return msg
 
 
@@ -267,7 +275,7 @@ class GameStartHandler(webapp2.RequestHandler):
 
         game.game_state.solitaire = []
         game.game_state.junk = []
-        game.game_state.life_count = 3
+        game.game_state.life_count = 1
         game.game_state.hint_count = 8
 
         game.game_state.user_hands = []

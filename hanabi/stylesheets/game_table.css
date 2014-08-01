@@ -95,9 +95,21 @@
     clear: both;
 }
 
+.score_message {
+    position: relative;
+    width: 75px;
+    float: right;
+    border: 2px solid black;
+    border-radius: 6px;
+    background-color: darkblue;
+    color: whitesmoke;
+    display: inline-block;
+}
+
 .dead_life_chip {
     position: relative;
-    top: 20px;
+    left: 450px;
+    top: 30px;
     width: 40px;
     height: 40px;
     border: 5px solid black;
@@ -108,7 +120,8 @@
 
 .alive_life_chip {
     position: relative;
-    top: 20px;
+    left: 450px;
+    top: 30px;
     width: 40px;
     height: 40px;
     border: 5px solid black;
