@@ -72,7 +72,6 @@ function onMessage(msg) {
     if (msg.data.indexOf("start_game") == 0) {
         hide_all();
 
-        var game_state = {};
         game_state.life = deserialize(msg.data, "life");
         game_state.hint = deserialize(msg.data, "hint");
         game_state.whose_move = deserialize(msg.data, "whose_move");

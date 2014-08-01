@@ -3,7 +3,7 @@ card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4];
 
 color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 
-function update_game_table(game_state) {
+function update_game_table() {
     var i = 0;
 
     var place = [];
@@ -72,3 +72,8 @@ function add_card_to_hand(hand, card) {
     else
         hand.innerHTML += "<div class='card'><span class='" + color_by_number[card.color] + "_card'>" + card.value + "</span></div>";
 }
+
+function to_solitaire() {
+    
+}
+

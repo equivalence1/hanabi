@@ -1,5 +1,3 @@
-var game_name;
-
 function create_game() {
     game_name = document.getElementById("game_name").value.toString();
     var game_password = document.getElementById("password").value.toString();
