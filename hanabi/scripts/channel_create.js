@@ -78,14 +78,6 @@ function onMessage(msg) {
         game_state.my_position = parseInt(deserialize(msg.data, "your_position"));
         game_state.users_count = deserialize(msg.data, "users_count");
 
-        game_state.users_ids = [];
-        for (var i = 0; i < game_state.users_count; i++) {
-            if (game_state.my_position == i)
-                game_state.users_ids[i] = user_id;
-            else
-                game_state.users_ids[i] = deserialize(msg.data, "user" + i + "id")
-        }
-
         game_state.hand = [];
         for (i = 0; i < game_state.users_count; i++) {
             game_state.hand[i] = [];
@@ -108,7 +100,7 @@ function onMessage(msg) {
         }
 
         game_state.junk = [];
-        var junk_str = deserialize(msg.data, "solitaire");
+        var junk_str = deserialize(msg.data, "junk");
         for (i = 0; i < junk_str.length / 2; i++) {
             game_state.junk[i] = {};
             game_state.junk[i].color = parseInt(junk_str[i * 2]);
@@ -116,7 +108,7 @@ function onMessage(msg) {
         }
 
         display_game_table();
-        update_game_table(game_state);
+        update_game_table();
     }
 
     if (msg.data.indexOf("add_game_to_list") == 0) {

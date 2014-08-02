@@ -19,7 +19,7 @@ function update_game_table() {
         var hand = document.getElementById(place[i]);
         hand.innerHTML = "";
         for (var j = 0; j < card_amount_in_hand_by_user_count[game_state.users_count]; j++)
-            add_card_to_hand(hand, game_state.hand[i][j]);
+            add_card_to_hand(hand, game_state.hand[i][j], i, j);
     }
 
     var table = document.getElementById("table");
@@ -66,14 +66,61 @@ function update_game_table() {
     }
 }
 
-function add_card_to_hand(hand, card) {
-    if (card == undefined)
-        hand.innerHTML += "<div class='card'><span class='undefined_card'>?</span></div>";
-    else
-        hand.innerHTML += "<div class='card'><span class='" + color_by_number[card.color] + "_card'>" + card.value + "</span></div>";
+function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
+    var new_card = document.createElement("div");
+    new_card.setAttribute("class", "card");
+    new_card.setAttribute("whoes_hand", whoes_hand);
+    new_card.setAttribute("card_id_in_hand", card_id_in_hand);
+    new_card.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
+
+    if (card == undefined) {
+        var span = document.createElement("span");
+        span.setAttribute("class", "undefined_card");
+        span.innerHTML = "?";
+
+        var btn1 = document.createElement("button");
+        btn1.setAttribute("class", "btn btn-success card_btn");
+        btn1.innerHTML = "To solitaire";
+        
+        var btn2 = document.createElement("button");
+        btn2.setAttribute("class", "btn btn-danger card_btn");
+        btn2.innerHTML = "To junk";
+    } else {
+        var span = document.createElement("span");
+        span.setAttribute("class", color_by_number[card.color] + "_card");
+        span.innerHTML = card.value;
+        
+        var btn1 = document.createElement("button");
+        btn1.setAttribute("class", "btn btn-success card_btn");
+        btn1.innerHTML = "Color hint";
+        
+        var btn2 = document.createElement("button");
+        btn2.setAttribute("class", "btn btn-danger card_btn");
+        btn2.innerHTML = "Value hint";
+    }
+
+    new_card.appendChild(span);
+    new_card.appendChild(btn1);
+    new_card.appendChild(btn2);
 }
 
-function to_solitaire() {
-    
+function to_solitaire(card_num) {
+    sendMessage(
+        "/move",
+         "game_name=" + game_name + "&user_id=" + user_id + "&type=solitaire" + "&user_position=" + game_state.my_position + "&card_num=" + card_num
+    )
 }
 
+function to_junk(card_num) {
+    sendMessage(
+        "/move",
+         "game_name=" + game_name + "&user_id=" + user_id + "&type=junk" + "&user_position=" + game_state.my_position + "&card_num=" + card_num
+    )
+}
+
+function hint() {
+    sendMessage(
+        "/move",
+         "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + game_state.my_position + "&color=" + + "&value="
+    )
+}

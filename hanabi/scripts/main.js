@@ -71,9 +71,6 @@ function add_to_list(name, fill, locked) {
     join_button.innerHTML = "join";
     join_button.setAttribute("room_name", name);
     join_button.onclick = join_room;
-        join_button.setAttribute("data-toggle", "tooltip");
-        join_button.setAttribute("data-placement", "top");
-        join_button.setAttribute("title", "This room has password");
 
     new_game.appendChild(game_name);
     new_game.appendChild(join_button);
