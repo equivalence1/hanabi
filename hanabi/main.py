@@ -115,7 +115,7 @@ class MainPage(webapp2.RequestHandler):
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
-        token = channel.create_channel(user_id)
+        token = channel.create_channel(user_id, duration_minutes=24*60)
         template_values = {
             "token": token,
             "t": user.user_id(),
@@ -433,6 +433,36 @@ class GameMoveHandler(webapp2.RequestHandler):
 
         game.put()
 
+
+class DisconnectionHandler(webapp2.RequestHandler):
+    def post(self):
+        logging.info("DisconnectionHandler post")
+
+        user_id = self.request.get("from")
+
+        games = Game.query(Game.user_id_list == user_id).fetch()
+
+        for game in games:
+            logging.info(user_id + " disconnected from game " + game.name)
+
+            for i in range(len(game.user_id_list)):
+                if game.started:
+                    for user in game.user_id_list:
+                        channel.send_message(user, "error?msg=Guys, bad news: this man #" + user_id + " disconnected")
+
+                game.user_id_list.remove(user_id)
+                game.user_count = len(game.user_id_list)
+                game.full = (game.user_count == game.max_user_count)
+                if game.user_count == 0:
+                    game.key.delete()
+                else:
+                    game.put()
+
+            users_str = "&users_list=" + "<br>".join([user for user in game.user_id_list])
+            for user in game.user_id_list:
+                channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
+
+
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
@@ -440,5 +470,6 @@ application = webapp2.WSGIApplication([
     ("/start_game", GameStartHandler),
     ("/send_chat_message", SendChatMessage),
     ("/game_list_refresh", GameListRefreshHandler),
-    ("/move", GameMoveHandler)
+    ("/move", GameMoveHandler),
+    ("/_ah/channel/disconnected/", DisconnectionHandler)
 ], debug = True)
