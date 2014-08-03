@@ -253,15 +253,7 @@ class GameStartHandler(webapp2.RequestHandler):
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
-        if game.user_count < 2:
-            logging.info("To small room for start")
-            host_id = self.request.get("user_id")
-            channel.send_message(
-                host_id,
-                "error?msg=Not enough users to start"
-            )
-            return
-
+        game.user_count = 4
         game.game_state = GameState()
 
         game.game_state.deck = []
@@ -330,5 +322,5 @@ application = webapp2.WSGIApplication([
     ("/join_game", JoinGame),
     ("/start_game", GameStartHandler),
     ("/send_chat_message", SendChatMessage),
-    ("/game_list_refresh", GameListRefreshHandler)
+    ("/game_list_refresh", GameListRefreshHandler),
 ], debug = True)

@@ -72,55 +72,80 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
     new_card.setAttribute("whoes_hand", whoes_hand);
     new_card.setAttribute("card_id_in_hand", card_id_in_hand);
     new_card.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
-
-    if (card == undefined) {
-        var span = document.createElement("span");
-        span.setAttribute("class", "undefined_card");
-        span.innerHTML = "?";
-
-        var btn1 = document.createElement("button");
-        btn1.setAttribute("class", "btn btn-success card_btn");
-        btn1.innerHTML = "To solitaire";
-        
-        var btn2 = document.createElement("button");
-        btn2.setAttribute("class", "btn btn-danger card_btn");
-        btn2.innerHTML = "To junk";
-    } else {
-        var span = document.createElement("span");
-        span.setAttribute("class", color_by_number[card.color] + "_card");
-        span.innerHTML = card.value;
-        
-        var btn1 = document.createElement("button");
-        btn1.setAttribute("class", "btn btn-success card_btn");
-        btn1.innerHTML = "Color hint";
-        
-        var btn2 = document.createElement("button");
-        btn2.setAttribute("class", "btn btn-danger card_btn");
-        btn2.innerHTML = "Value hint";
+    
+    if (card != undefined) {
+        new_card.setAttribute("card_color", card.color);
+        new_card.setAttribute("card_value", card.value);
     }
+    
+    var span = document.createElement("span");
+    var btn1 = document.createElement("button");
+    var btn2 = document.createElement("button");
 
     new_card.appendChild(span);
     new_card.appendChild(btn1);
     new_card.appendChild(btn2);
+
+    if (card == undefined) {
+        span.setAttribute("class", "undefined_card");
+        span.setAttribute("value", "?");
+        span.innerHTML = "?";
+
+        btn1.setAttribute("class", "btn btn-success card_btn");
+        btn1.innerHTML = "To solitaire";
+        btn1.onclick = to_solitaire;
+        
+        btn2.setAttribute("class", "btn btn-danger card_btn");
+        btn2.innerHTML = "To junk";
+        btn2.onclick = to_junk;
+    } else {
+        span.setAttribute("class", color_by_number[card.color] + "_card");
+        span.innerHTML = card.value;
+        
+        btn1.setAttribute("class", "btn btn-success card_btn");
+        btn1.innerHTML = "Color hint";
+        btn1.onclick = color_hint;
+        
+        btn2.setAttribute("class", "btn btn-danger card_btn");
+        btn2.innerHTML = "Value hint";
+        btn2.onclick = value_hint;
+    }
+
+    hand.appendChild(new_card);
 }
 
-function to_solitaire(card_num) {
+function to_solitaire() {
     sendMessage(
         "/move",
-         "game_name=" + game_name + "&user_id=" + user_id + "&type=solitaire" + "&user_position=" + game_state.my_position + "&card_num=" + card_num
+         "game_name=" + game_name + "&user_id=" + user_id + "&type=solitaire" + "&user_position=" + game_state.my_position + "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
     )
 }
 
-function to_junk(card_num) {
+function to_junk() {
     sendMessage(
         "/move",
-         "game_name=" + game_name + "&user_id=" + user_id + "&type=junk" + "&user_position=" + game_state.my_position + "&card_num=" + card_num
+         "game_name=" + game_name + "&user_id=" + user_id + "&type=junk" + "&user_position=" + game_state.my_position + "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
     )
 }
 
-function hint() {
+function color_hint() {
+    var whoes_hand = this.parentNode.getAttribute("whoes_hand");
+    var color = this.parentNode.getAttribute("card_color");
+    var val = -1;
+
     sendMessage(
         "/move",
-         "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + game_state.my_position + "&color=" + + "&value="
+        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whoes_hand + "&color=" + color + "&value=" + val
+    )
+}
+
+function value_hint() {
+    var whoes_hand = this.parentNode.getAttribute("whoes_hand");
+    var color = -1;
+    var val = this.parentNode.getAttribute("card_value");
+
+    sendMessage(
+        "/move",
+        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whoes_hand + "&color=" + color + "&value=" + val
     )
 }
