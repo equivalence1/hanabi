@@ -23,6 +23,7 @@ function update_game_table() {
     }
 
     var table = document.getElementById("table");
+    table.innerHTML = "";
 
     var scores = document.createElement("div");
     scores.setAttribute("class", "score_message");

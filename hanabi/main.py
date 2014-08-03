@@ -28,6 +28,7 @@ import webapp2
 
 card_amount_in_deck_by_value = [0, 3, 2, 2, 2, 1]
 card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4]
+color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
@@ -48,7 +49,7 @@ def game_state_msg_for_user(game, num):
     msg += "&users_count=" + str(game.user_count)
 
     for user_num in range(game.user_count):
-        if num != user_num:
+        if (num != user_num):
             msg += "&user" + str(user_num) + "id=" + game.user_id_list[num]
             msg += "&user" + str(user_num) + "cards="
             for card in game.game_state.user_hands[user_num].cards:
@@ -318,7 +319,119 @@ class GameListRefreshHandler(webapp2.RequestHandler):
 
 class GameMoveHandler(webapp2.RequestHandler):
     def post(self):
-        pass
+        move_type = self.request.get("type")
+        user_id = self.request.get("user_id")
+        game_name = self.request.get("game_name")
+        user_position = int(self.request.get("user_position"))
+        game = Game.query(Game.name == game_name).fetch(1)[0]
+
+        if (game.game_state.life_count == 0):
+            num = 0
+            for user in game.user_id_list:
+                channel.send_message(user, "error?msg=Game Over!")
+                num += 1
+            return
+
+        if (move_type == "junk"):
+            card_num = int(self.request.get("card_num"))
+            game.game_state.hint_count = max(8, game.game_state.hint_count + 1)
+            card_to_junk = game.game_state.user_hands[user_position].cards.pop(card_num)
+            game.game_state.junk.append(card_to_junk)
+
+            first_part = game.game_state.user_hands[user_position].cards[:card_num]
+            fird_part = game.game_state.user_hands[user_position].cards[card_num:]
+            new_card = game.game_state.deck.pop()
+
+            game.game_state.user_hands[user_position].cards = first_part + [new_card] + fird_part
+
+            num = 0
+            for user_id in game.user_id_list:
+                channel.send_message(user_id, game_state_msg_for_user(game, num))
+                num += 1
+
+        if (move_type == "solitaire"):
+            card_num = int(self.request.get("card_num"))
+            cur_card = game.game_state.user_hands[user_position].cards[card_num]
+
+            mx = 0
+            for card in game.game_state.solitaire:
+                if (card.color == cur_card.color):
+                    mx = max(mx, card.value)
+
+            if (mx != cur_card.value - 1):
+                channel.send_message(user_id, "error?msg=Cant put this card to solitaire")
+                for user in game.user_id_list:
+                    if (user != user_id):
+                        channel.send_message(user, "error?msg=User " + user_id + " tried to put card to solitaire and failed")
+
+                game.game_state.life_count -= 1
+                if (game.game_state.life_count == 0):
+                    num = 0
+                    for user in game.user_id_list:
+                        channel.send_message(user, game_state_msg_for_user(game, num))
+                        channel.send_message(user, "error?msg=Game Over!")
+                        num += 1
+                    game.put()
+                    return
+
+            game.game_state.junk.append(cur_card)
+
+            game.game_state.user_hands[user_position].cards.pop(card_num)
+            first_part = game.game_state.user_hands[user_position].cards[:card_num]
+            fird_part = game.game_state.user_hands[user_position].cards[card_num:]
+            new_card = game.game_state.deck.pop()
+
+            game.game_state.user_hands[user_position].cards = first_part + [new_card] + fird_part
+
+            num = 0
+            for user in game.user_id_list:
+                channel.send_message(user, game_state_msg_for_user(game, num))
+                num += 1
+
+
+        if (move_type == "hint"):
+            logging.info("hint")
+            color = int(self.request.get("color"))
+            value = int(self.request.get("value"))
+
+            if (game.game_state.hint_count == 0):
+                channel.send_message(user_id, "error?msg=U have no hints anymore")
+                return
+
+            game.game_state.hint_count -= 1
+
+            card_ids = []
+
+            num = 0
+            for card in game.game_state.user_hands[user_position].cards:
+                if (card.color == color):
+                    card_ids.append(num)
+                elif (card.value == value):
+                    card_ids.append(num)
+                num += 1
+
+            for user in game.user_id_list:
+                if (color != -1):
+                    channel.send_message(
+                        user,
+                        "hint?msg=Player " + user_id + " hinted to player " +\
+                        game.user_id_list[user_position] + " that cards number " +\
+                        ", ".join(map(str, card_ids)) + "are all have color " + color_by_number[color]
+                    )
+                else:
+                    channel.send_message(
+                        user,
+                        "hint?msg=Player " + user_id + " hinted to player " +\
+                        game.user_id_list[user_position] + " that cards number " +\
+                        ", ".join(map(str, card_ids)) + "are all have value " + str(value)
+                    )
+
+            num = 0
+            for user in game.user_id_list:
+                channel.send_message(user, game_state_msg_for_user(game, num))
+                num += 1
+
+        game.put()
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),
