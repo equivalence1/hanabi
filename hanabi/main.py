@@ -316,6 +316,10 @@ class GameListRefreshHandler(webapp2.RequestHandler):
         logging.info("send " + param_string)
 
 
+class GameMoveHandler(webapp2.RequestHandler):
+    def post(self):
+        pass
+
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
@@ -323,4 +327,5 @@ application = webapp2.WSGIApplication([
     ("/start_game", GameStartHandler),
     ("/send_chat_message", SendChatMessage),
     ("/game_list_refresh", GameListRefreshHandler),
+    ("/move", GameMoveHandler)
 ], debug = True)
