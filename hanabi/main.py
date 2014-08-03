@@ -334,7 +334,7 @@ class GameMoveHandler(webapp2.RequestHandler):
 
         if (move_type == "junk"):
             card_num = int(self.request.get("card_num"))
-            game.game_state.hint_count = max(8, game.game_state.hint_count + 1)
+            game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
             card_to_junk = game.game_state.user_hands[user_position].cards.pop(card_num)
             game.game_state.junk.append(card_to_junk)
 
