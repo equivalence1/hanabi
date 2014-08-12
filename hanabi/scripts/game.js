@@ -3,6 +3,12 @@ card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4];
 
 color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 
+if (!Array.prototype.last){
+    Array.prototype.last = function(){
+        return this[this.length - 1];
+    };
+};
+
 function update_game_table() {
     var i = 0;
 
@@ -22,48 +28,63 @@ function update_game_table() {
             add_card_to_hand(hand, game_state.hand[i][j], i, j);
     }
 
-    var table = document.getElementById("table");
-    table.innerHTML = "";
+//    var table = document.getElementById("table");
+//    table.innerHTML = "";
+
+    var table_solitaire = document.getElementById("solitaire");
+    table_solitaire.innerHTML = "";
+    var table_junk = document.getElementById("junk");
+    table_junk.innerHTML = "";
+    var table_chips = document.getElementById("chips");
+    table_chips.innerHTML = "";
 
     var scores = document.createElement("div");
     scores.setAttribute("class", "score_message");
     scores.innerHTML = "Scores: " + game_state.solitaire.length.toString();
-    table.appendChild(scores);
+    table_chips.appendChild(scores);
 
     for (i = 0; i < 3 - game_state.life; i++) {
         var dead_life = document.createElement("div");
         dead_life.setAttribute("class", "chip");
         dead_life.innerHTML = "<img src='images/dead_life.png'>";
-        dead_life.style.left = (450 + 50 * i).toString() + "px";
+        dead_life.style.left = (50 * i).toString() + "px";
         dead_life.style.top = "30px";
-        table.appendChild(dead_life);
+        table_chips.appendChild(dead_life);
     }
 
     for (; i < 3; i++) {
         var alive_life = document.createElement("div");
         alive_life.setAttribute("class", "chip");
         alive_life.innerHTML = "<img src='images/alive_life.png'>";
-        alive_life.style.left = (450 + 50 * i).toString() + "px";
+        alive_life.style.left = (50 * i).toString() + "px";
         alive_life.style.top = "30px";
-        table.appendChild(alive_life);
+        table_chips.appendChild(alive_life);
     }
 
     for (i = 0; i < 8 - game_state.hint; i++) {
         var dead_hint = document.createElement("div");
         dead_hint.setAttribute("class", "chip");
         dead_hint.innerHTML = "<img src='images/dead_hint.png'>"
-        dead_hint.style.left = (500 + 50 * (i % 2)).toString() + "px";
+        dead_hint.style.left = (50 + 50 * (i % 2)).toString() + "px";
         dead_hint.style.top = (80 + 50 * (i / 2 | 0)).toString() + "px";
-        table.appendChild(dead_hint);
+        table_chips.appendChild(dead_hint);
     }
 
     for (; i < 8; i++) {
         var alive_hint = document.createElement("div");
         alive_hint.setAttribute("class", "chip");
-        alive_hint.innerHTML = "<img src='images/alive_hint.png'>"
-        alive_hint.style.left = (500 + 50 * (i % 2)).toString() + "px";
+        alive_hint.innerHTML = "<img src='images/alive_hint.png'>";
+        alive_hint.style.left = (50 + 50 * (i % 2)).toString() + "px";
         alive_hint.style.top = (80 + 50 * (i / 2 | 0)).toString() + "px";
-        table.appendChild(alive_hint);
+        table_chips.appendChild(alive_hint);
+    }
+
+    for (i = 0; i < game_state.solitaire.length; i++) {
+        add_card_to_soliter(table_solitaire, game_state.solitaire[i]);
+    }
+
+    for (i = 0; i < game_state.junk.length; i++) {
+
     }
 }
 
@@ -85,8 +106,8 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
     card_over.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
 
     if (card != undefined) {
-        card_content.setAttribute("card_color", card.color);
-        card_content.setAttribute("card_value", card.value);
+        card_over.setAttribute("card_color", card.color);
+        card_over.setAttribute("card_value", card.value);
     }
     
     var span = document.createElement("span");
@@ -125,6 +146,29 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
     new_card.appendChild(card_content);
     new_card.appendChild(card_over);
     hand.appendChild(new_card);
+}
+
+function add_card_to_soliter(sol, card) {
+    var new_card = document.createElement("div");
+    new_card.setAttribute("class", "card " + color_by_number[card.color] + "_card_solitaire card_soliter");
+
+    var card_content = document.createElement("div");
+    card_content.setAttribute("class", "card_content");
+    
+    var span = document.createElement("span");
+
+    card_content.appendChild(span);
+
+    span.setAttribute("class", color_by_number[card.color] + "_card");
+    span.innerHTML = card.value;
+
+    var a = document.getElementsByClassName(color_by_number[card.color] + "_card_solitaire");
+    var prev_card = a[a.length - 1]
+
+    new_card.style.position = "relative";
+    new_card.appendChild(card_content);
+
+    sol.appendChild(new_card);
 }
 
 function to_solitaire() {

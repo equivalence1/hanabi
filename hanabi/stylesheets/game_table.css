@@ -30,6 +30,30 @@
     height: 300px;
 }
 
+#solitaire {
+    position: relative;
+    display: inline-block;
+    width: 450px;
+    height: 150px;
+    float: left;
+}
+
+#junk {
+    position: relative;
+    display: inline-block;
+    width: 450px;
+    height: 150px;
+    float: left;
+}
+
+#chips {
+    position: relative;
+    display: inline-block;
+    width: 150px;
+    height: 300px;
+    float: right;
+}
+
 #right_hand {
     position: absolute;
     top: 0px;
@@ -59,6 +83,10 @@
     font-family: Moonlight;
     font-size: 36pt;
     margin: 3px;
+}
+
+.card_soliter {
+    position: absolute;
 }
 
 .red_card {
@@ -107,6 +135,9 @@
     position: absolute;
     width: 50px;
     height: 50px;
+/*    float: right;*/
+    display: inline-block;
+    border-radius: 25px;
 }
 
 .card_over {

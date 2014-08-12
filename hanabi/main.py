@@ -375,7 +375,15 @@ class GameMoveHandler(webapp2.RequestHandler):
                     game.put()
                     return
             else:
-                game.game_state.solitaire.append(cur_card)
+                if (cur_card.value == 1): 
+                    game.game_state.solitaire.append(cur_card)
+                else:
+                    x = 0
+                    for some_card in game.game_state.solitaire:
+                        if (some_card.color == cur_card.color):
+                            break
+                        x += 1
+                    game.game_state.solitaire[x] = cur_card
 
             game.game_state.user_hands[user_position].cards.pop(card_num)
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
@@ -437,6 +445,7 @@ class GameMoveHandler(webapp2.RequestHandler):
 
 class DisconnectionHandler(webapp2.RequestHandler):
     def post(self):
+        return
         logging.info("DisconnectionHandler post")
 
         user_id = self.request.get("from")
