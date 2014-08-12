@@ -364,6 +364,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                     if (user != user_id):
                         channel.send_message(user, "error?msg=User " + user_id + " tried to put card to solitaire and failed")
 
+                game.game_state.junk.append(cur_card)
                 game.game_state.life_count -= 1
                 if (game.game_state.life_count == 0):
                     num = 0
@@ -373,8 +374,8 @@ class GameMoveHandler(webapp2.RequestHandler):
                         num += 1
                     game.put()
                     return
-
-            game.game_state.junk.append(cur_card)
+            else:
+                game.game_state.solitaire.append(cur_card)
 
             game.game_state.user_hands[user_position].cards.pop(card_num)
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
