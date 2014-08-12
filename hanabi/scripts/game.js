@@ -72,20 +72,30 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
     new_card.setAttribute("class", "card");
     new_card.setAttribute("whoes_hand", whoes_hand);
     new_card.setAttribute("card_id_in_hand", card_id_in_hand);
-    new_card.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
     
+    var card_content = document.createElement("div");
+    card_content.setAttribute("class", "card_content");
+    card_content.setAttribute("whoes_hand", whoes_hand);
+    card_content.setAttribute("card_id_in_hand", card_id_in_hand);
+
+    var card_over = document.createElement("div");
+    card_over.setAttribute("class", "card_over");
+    card_over.setAttribute("whoes_hand", whoes_hand);
+    card_over.setAttribute("card_id_in_hand", card_id_in_hand);
+    card_over.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
+
     if (card != undefined) {
-        new_card.setAttribute("card_color", card.color);
-        new_card.setAttribute("card_value", card.value);
+        card_content.setAttribute("card_color", card.color);
+        card_content.setAttribute("card_value", card.value);
     }
     
     var span = document.createElement("span");
     var btn1 = document.createElement("button");
     var btn2 = document.createElement("button");
 
-    new_card.appendChild(span);
-    new_card.appendChild(btn1);
-    new_card.appendChild(btn2);
+    card_content.appendChild(span);
+    card_over.appendChild(btn1);
+    card_over.appendChild(btn2);
 
     if (card == undefined) {
         span.setAttribute("class", "undefined_card");
@@ -93,25 +103,27 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
         span.innerHTML = "?";
 
         btn1.setAttribute("class", "btn btn-success card_btn");
-        btn1.innerHTML = "To solitaire";
+        btn1.innerHTML = "Solitaire";
         btn1.onclick = to_solitaire;
         
         btn2.setAttribute("class", "btn btn-danger card_btn");
-        btn2.innerHTML = "To junk";
+        btn2.innerHTML = "Junk";
         btn2.onclick = to_junk;
     } else {
         span.setAttribute("class", color_by_number[card.color] + "_card");
         span.innerHTML = card.value;
         
         btn1.setAttribute("class", "btn btn-success card_btn");
-        btn1.innerHTML = "Color hint";
+        btn1.innerHTML = color_by_number[card.color];
         btn1.onclick = color_hint;
         
         btn2.setAttribute("class", "btn btn-danger card_btn");
-        btn2.innerHTML = "Value hint";
+        btn2.innerHTML = card.value;
         btn2.onclick = value_hint;
     }
 
+    new_card.appendChild(card_content);
+    new_card.appendChild(card_over);
     hand.appendChild(new_card);
 }
 
