@@ -451,7 +451,13 @@ class DisconnectionHandler(webapp2.RequestHandler):
                     for user in game.user_id_list:
                         channel.send_message(user, "error?msg=Guys, bad news: this man #" + user_id + " disconnected")
 
-                game.user_id_list.remove(user_id)
+                j = 0
+                while j < len(game.user_id_list):
+                    if game.user_id_list[j] == user_id:
+                        game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
+                    else:
+                        j += 1
+
                 game.user_count = len(game.user_id_list)
                 game.full = (game.user_count == game.max_user_count)
                 if game.user_count == 0:
