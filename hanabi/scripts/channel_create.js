@@ -40,6 +40,7 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("joined") === 0) {
         game_name = deserialize(msg.data, "game_name");
+        game_url = deserialize(msg.data, "game_url");
         document.getElementById("last").innerHTML = msg.data;
         var users_count = deserialize(msg.data, "users_count");
         var users_str = deserialize(msg.data, "users_list");
@@ -55,6 +56,7 @@ function onMessage(msg) {
     }
 
     if (msg.data.indexOf("created") === 0) {
+        game_url = deserialize(msg.data, "game_url");
         var users_count = deserialize(msg.data, "users_count");
         var users_str = deserialize(msg.data, "users_list");
         update_online_list(users_count, users_str);
