@@ -157,10 +157,11 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.locked = (len(game.password) != 0)
         game.put()
 
-        users_str = "&users_list=" + user_id
         channel.send_message(
             user_id,
-            "created?&users_count=" + str(game.user_count) + users_str
+            "created?game_url=" + game.key.urlsafe() +
+            "&users_count=" + str(game.user_count) +
+            "&users_list=" + user_id
         )
 
 
@@ -212,12 +213,15 @@ class JoinGame(webapp2.RequestHandler):
             user_id + " successfully joined into game named " + game_name
         )
         logging.info("Now in game are: " + ', '.join(game.user_id_list))
+
         users_str =\
             "&users_list=" + "<br>".join([user for user in game.user_id_list])
         channel.send_message(
-            user_id, "joined?game_name=" + game_name + "&started=" +
-            str(game.started) + "&users_count=" + str(game.user_count) +
-            users_str
+            user_id,
+            "joined?game_url=" + game.key.urlsafe() +
+            "&game_name=" + game_name +
+            "&started=" + str(game.started) +
+            "&users_count=" + str(game.user_count) + users_str
         )
 
         for user in game.user_id_list:
@@ -241,8 +245,9 @@ class SendChatMessage(webapp2.RequestHandler):
 
         for user_id in game.user_id_list:
             channel.send_message(
-                user_id, "new_message?from_id=" + from_id + "&message=" +
-                message
+                user_id,
+                "new_message?from_id=" + from_id +
+                "&message=" + message
             )
 
 
@@ -339,10 +344,10 @@ class GameMoveHandler(webapp2.RequestHandler):
             game.game_state.junk.append(card_to_junk)
 
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
-            fird_part = game.game_state.user_hands[user_position].cards[card_num:]
+            third_part = game.game_state.user_hands[user_position].cards[card_num:]
             new_card = game.game_state.deck.pop()
 
-            game.game_state.user_hands[user_position].cards = first_part + [new_card] + fird_part
+            game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
             num = 0
             for user_id in game.user_id_list:
@@ -387,10 +392,10 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             game.game_state.user_hands[user_position].cards.pop(card_num)
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
-            fird_part = game.game_state.user_hands[user_position].cards[card_num:]
+            third_part = game.game_state.user_hands[user_position].cards[card_num:]
             new_card = game.game_state.deck.pop()
 
-            game.game_state.user_hands[user_position].cards = first_part + [new_card] + fird_part
+            game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
             num = 0
             for user in game.user_id_list:
@@ -443,40 +448,56 @@ class GameMoveHandler(webapp2.RequestHandler):
         game.put()
 
 
+@ndb.transactional(retries=4)
+def user_disconnect(user_id, game_url):
+    logging.info("user_disconnect transaction")
+
+    game_key = ndb.Key(urlsafe=game_url)
+    game = game_key.get()
+
+    if game.started:
+        for user in game.user_id_list:
+            if user != user_id:
+                channel.send_message(user, "error?KABOOM user #" + user_id + " gone!!!")
+        return False
+
+    j = 0
+    while j < len(game.user_id_list):
+        if game.user_id_list[j] == user_id:
+            game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
+        else:
+            j += 1
+
+    game.user_count = len(game.user_id_list)
+    game.full = (game.user_count == game.max_user_count)
+    if game.user_count == 0:
+        game.key.delete()
+        return False
+    else:
+        game.put()
+        return True
+
+
+@ndb.transactional(retries=4)
+def update_online_users(game_url):
+    logging.info("update_online_users transaction")
+
+    game_key = ndb.Key(urlsafe=game_url)
+    game = game_key.get()
+
+    users_str = "&users_list=" + "<br>".join([user for user in game.user_id_list])
+    for user in game.user_id_list:
+        channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
+
+
 class DisconnectionHandler(webapp2.RequestHandler):
     def post(self):
-        return
         logging.info("DisconnectionHandler post")
 
         user_id = self.request.get("from")
-
-        games = Game.query(Game.user_id_list == user_id).fetch()
-
-        for game in games:
-            logging.info(user_id + " disconnected from game " + game.name)
-
-            for i in range(len(game.user_id_list)):
-                if game.started:
-                    for user in game.user_id_list:
-                        channel.send_message(user, "error?msg=Guys, bad news: this man #" + user_id + " disconnected")
-
-                j = 0
-                while j < len(game.user_id_list):
-                    if game.user_id_list[j] == user_id:
-                        game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
-                    else:
-                        j += 1
-
-                game.user_count = len(game.user_id_list)
-                game.full = (game.user_count == game.max_user_count)
-                if game.user_count == 0:
-                    game.key.delete()
-                else:
-                    game.put()
-
-            users_str = "&users_list=" + "<br>".join([user for user in game.user_id_list])
-            for user in game.user_id_list:
-                channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
+        game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+        if user_disconnect(user_id, game_url):
+            update_online_users(game_url)
 
 
 application = webapp2.WSGIApplication([
