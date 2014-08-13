@@ -40,7 +40,7 @@ function update_game_table() {
 
     var scores = document.createElement("div");
     scores.setAttribute("class", "score_message");
-    scores.innerHTML = "Scores: " + game_state.solitaire.length.toString();
+    scores.innerHTML = "Scores: " + game_state.scores;
     table_chips.appendChild(scores);
 
     for (i = 0; i < 3 - game_state.life; i++) {
@@ -79,31 +79,29 @@ function update_game_table() {
         table_chips.appendChild(alive_hint);
     }
 
-    for (i = 0; i < game_state.solitaire.length; i++) {
-        add_card_to_soliter(table_solitaire, game_state.solitaire[i]);
-    }
+    add_cards_to_solitaire(table_solitaire, game_state.solitaire);
 
     for (i = 0; i < game_state.junk.length; i++) {
 
     }
 }
 
-function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
+function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
     var new_card = document.createElement("div");
     new_card.setAttribute("class", "card");
-    new_card.setAttribute("whoes_hand", whoes_hand);
+    new_card.setAttribute("whose_hand", whose_hand);
     new_card.setAttribute("card_id_in_hand", card_id_in_hand);
     
     var card_content = document.createElement("div");
     card_content.setAttribute("class", "card_content");
-    card_content.setAttribute("whoes_hand", whoes_hand);
+    card_content.setAttribute("whose_hand", whose_hand);
     card_content.setAttribute("card_id_in_hand", card_id_in_hand);
 
     var card_over = document.createElement("div");
     card_over.setAttribute("class", "card_over");
-    card_over.setAttribute("whoes_hand", whoes_hand);
+    card_over.setAttribute("whose_hand", whose_hand);
     card_over.setAttribute("card_id_in_hand", card_id_in_hand);
-    card_over.setAttribute("id", whoes_hand * 10 + card_id_in_hand);
+    card_over.setAttribute("id", whose_hand * 10 + card_id_in_hand);
 
     if (card != undefined) {
         card_over.setAttribute("card_color", card.color);
@@ -148,27 +146,33 @@ function add_card_to_hand(hand, card, whoes_hand, card_id_in_hand) {
     hand.appendChild(new_card);
 }
 
-function add_card_to_soliter(sol, card) {
-    var new_card = document.createElement("div");
-    new_card.setAttribute("class", "card " + color_by_number[card.color] + "_card_solitaire card_soliter");
+function add_cards_to_solitaire(sol, cards) {
+    var highest_card = [-1, 0, 0, 0, 0, 0];
+    for (var i = 0; i < cards.length; i++)
+        highest_card[cards[i].color] = Math.max(highest_card[cards[i].color], cards[i].value);
 
-    var card_content = document.createElement("div");
-    card_content.setAttribute("class", "card_content");
-    
-    var span = document.createElement("span");
+    for (var color = 1; color <= 5; color++) {
+        for (var value = 1; value <= highest_card[color]; value++) {
+            var new_card = document.createElement("div");
+            new_card.setAttribute("class", "card_solitaire");
+            new_card.style.left = (color - 1) * (64 + 20) + 15 + "px";
+            new_card.style.top = 10 * (value - 1) + 3 + "px";
 
-    card_content.appendChild(span);
+            var card_content = document.createElement("div");
+            card_content.setAttribute("class", "card_content");
 
-    span.setAttribute("class", color_by_number[card.color] + "_card");
-    span.innerHTML = card.value;
+            var span = document.createElement("span");
 
-    var a = document.getElementsByClassName(color_by_number[card.color] + "_card_solitaire");
-    var prev_card = a[a.length - 1]
+            card_content.appendChild(span);
 
-    new_card.style.position = "relative";
-    new_card.appendChild(card_content);
+            span.setAttribute("class", color_by_number[color] + "_card");
+            span.innerHTML = value;
 
-    sol.appendChild(new_card);
+            new_card.appendChild(card_content);
+
+            sol.appendChild(new_card);
+        }
+    }
 }
 
 function to_solitaire() {
@@ -186,23 +190,23 @@ function to_junk() {
 }
 
 function color_hint() {
-    var whoes_hand = this.parentNode.getAttribute("whoes_hand");
+    var whose_hand = this.parentNode.getAttribute("whose_hand");
     var color = this.parentNode.getAttribute("card_color");
     var val = -1;
 
     sendMessage(
         "/move",
-        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whoes_hand + "&color=" + color + "&value=" + val
+        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whose_hand + "&color=" + color + "&value=" + val
     )
 }
 
 function value_hint() {
-    var whoes_hand = this.parentNode.getAttribute("whoes_hand");
+    var whose_hand = this.parentNode.getAttribute("whose_hand");
     var color = -1;
     var val = this.parentNode.getAttribute("card_value");
 
     sendMessage(
         "/move",
-        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whoes_hand + "&color=" + color + "&value=" + val
+        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whose_hand + "&color=" + color + "&value=" + val
     )
 }

@@ -94,11 +94,13 @@ function onMessage(msg) {
         }
 
         game_state.solitaire = [];
+        game_state.scores = 0;
         var solitaire_str = deserialize(msg.data, "solitaire");
         for (i = 0; i < solitaire_str.length / 2; i++) {
             game_state.solitaire[i] = {};
             game_state.solitaire[i].color = parseInt(solitaire_str[i * 2]);
             game_state.solitaire[i].value = parseInt(solitaire_str[i * 2 + 1]);
+            game_state.scores += game_state.solitaire[i].value;
         }
 
         game_state.junk = [];

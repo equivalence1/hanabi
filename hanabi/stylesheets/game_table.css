@@ -24,34 +24,38 @@
     position: absolute;
     top: 100px;
     left: 100px;
-    display: inline-block;
+    display: inline;
     background-color: orangered;
     width: 600px;
     height: 300px;
 }
 
 #solitaire {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    display: inline;
     width: 450px;
     height: 150px;
-    float: left;
+    background-color: #CD5555;
+    left: 0px;
+    top: 0px;
 }
 
 #junk {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    display: inline;
     width: 450px;
     height: 150px;
-    float: left;
+    left: 0px;
+    top: 150px;
 }
 
 #chips {
-    position: relative;
-    display: inline-block;
+    position: absolute;
+    display: inline;
     width: 150px;
     height: 300px;
-    float: right;
+    left: 450px;
+    top: 0px;
 }
 
 #right_hand {
@@ -85,8 +89,14 @@
     margin: 3px;
 }
 
-.card_soliter {
+.card_solitaire {
     position: absolute;
+    height: 94px;
+    width: 64px;
+    display: inline-block;
+    font-family: Moonlight;
+    font-size: 36pt;
+    margin: 3px;
 }
 
 .red_card {
@@ -98,7 +108,7 @@
 }
 
 .blue_card {
-    color: blue;
+    color: cornflowerblue;
 }
 
 .yellow_card {
