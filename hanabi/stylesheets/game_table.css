@@ -95,8 +95,18 @@
     width: 64px;
     display: inline-block;
     font-family: Moonlight;
-    font-size: 36pt;
+    font-size: 16pt;
     margin: 3px;
+}
+
+.mini_card {
+    position: relative;
+    height: 36px;
+    width: 25px;
+    display: inline-block;
+    font-family: Moonlight;
+    font-size: 36pt;
+    margin: 2px;
 }
 
 .red_card {
@@ -175,6 +185,19 @@
     border: 2px solid black;
     border-radius: 6px;
     margin: 3px;
+}
+
+.mini_card_content {
+    position: absolute;
+    height: 36px;
+    width: 25px;
+    display: inline-block;
+    font-family: Moonlight;
+    font-size: 14pt;
+    background-color: darkblue;
+    border: 1px solid black;
+    border-radius: 3px;
+    margin: 2px;
 }
 
 .card_content:hover .card_over {

@@ -81,9 +81,7 @@ function update_game_table() {
 
     add_cards_to_solitaire(table_solitaire, game_state.solitaire);
 
-    for (i = 0; i < game_state.junk.length; i++) {
-
-    }
+    add_cards_to_junk(table_junk, game_state.junk);
 }
 
 function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
@@ -162,7 +160,6 @@ function add_cards_to_solitaire(sol, cards) {
             card_content.setAttribute("class", "card_content");
 
             var span = document.createElement("span");
-
             card_content.appendChild(span);
 
             span.setAttribute("class", color_by_number[color] + "_card");
@@ -172,6 +169,24 @@ function add_cards_to_solitaire(sol, cards) {
 
             sol.appendChild(new_card);
         }
+    }
+}
+
+function add_cards_to_junk(junk, cards) {
+    for (var i = 0; i < cards.length; i++) {
+        var new_mini_card = document.createElement("div");
+        new_mini_card.setAttribute("class", "mini_card");
+
+        var card_content = document.createElement("div");
+        card_content.setAttribute("class", "mini_card_content");
+
+        var span = document.createElement("span");
+        span.setAttribute("class", color_by_number[cards[i].color] + "_card");
+        span.innerHTML = cards[i].value;
+
+        card_content.appendChild(span);
+        new_mini_card.appendChild(card_content);
+        junk.appendChild(new_mini_card);
     }
 }
 

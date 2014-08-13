@@ -377,7 +377,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                         channel.send_message(user, game_state_msg_for_user(game, num))
                         channel.send_message(user, "error?msg=Game Over!")
                         num += 1
-                    game.put()
+                    game.key.delete()
                     return
             else:
                 if (cur_card.value == 1): 
@@ -389,6 +389,8 @@ class GameMoveHandler(webapp2.RequestHandler):
                             break
                         x += 1
                     game.game_state.solitaire[x] = cur_card
+                    if (cur_card.value == 5):
+                        game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
 
             game.game_state.user_hands[user_position].cards.pop(card_num)
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
@@ -459,6 +461,7 @@ def user_disconnect(user_id, game_url):
         for user in game.user_id_list:
             if user != user_id:
                 channel.send_message(user, "error?KABOOM user #" + user_id + " gone!!!")
+        game.key.delete()
         return False
 
     j = 0
