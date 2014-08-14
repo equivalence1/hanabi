@@ -116,7 +116,7 @@ class MainPage(webapp2.RequestHandler):
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
-        token = channel.create_channel(user_id, duration_minutes=1)
+        token = channel.create_channel(user_id, duration_minutes=2*60)
         template_values = {
             "token": token,
             "t": user.user_id(),
