@@ -1,5 +1,7 @@
 var game_name;
 var game_state = {};
 var game_url;
-var hint = {};
+var hint;
 var place;
+
+var step = 0.05;

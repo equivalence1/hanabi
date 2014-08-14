@@ -6,7 +6,7 @@ color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 if (!Array.prototype.last){
     Array.prototype.last = function(){
         return this[this.length - 1];
-    }
+    };
 }
 
 function update_game_table() {
@@ -28,9 +28,6 @@ function update_game_table() {
             add_card_to_hand(hand, game_state.hand[i][j], i, j);
     }
 
-//    var table = document.getElementById("table");
-//    table.innerHTML = "";
-
     var table_solitaire = document.getElementById("solitaire");
     table_solitaire.innerHTML = "";
     var table_junk = document.getElementById("junk");
@@ -50,6 +47,19 @@ function update_game_table() {
     deck_size.innerHTML = "Deck: " + game_state.deck_size;
     table_chips.appendChild(deck_size);
 
+    add_chips(table_chips);
+
+    add_cards_to_solitaire(table_solitaire, game_state.solitaire);
+
+    add_cards_to_junk(table_junk, game_state.junk);
+
+    if (hint != undefined) {
+        display_hint();
+        hint = undefined;
+    }
+}
+
+function add_chips(table_chips) {
     for (i = 0; i < 3 - game_state.life; i++) {
         var dead_life = document.createElement("div");
         dead_life.setAttribute("class", "chip");
@@ -84,15 +94,6 @@ function update_game_table() {
         alive_hint.style.left = (50 + 50 * (i % 2)).toString() + "px";
         alive_hint.style.top = (80 + 50 * (i / 2 | 0)).toString() + "px";
         table_chips.appendChild(alive_hint);
-    }
-
-    add_cards_to_solitaire(table_solitaire, game_state.solitaire);
-
-    add_cards_to_junk(table_junk, game_state.junk);
-
-    if (hint != {}) {
-        display_hint();
-        hint = {};
     }
 }
 
@@ -202,8 +203,99 @@ function add_cards_to_junk(junk, cards) {
     }
 }
 
+function start_animation(arrow) {
+    function frame() {
+        if (arrow == undefined)
+            clearInterval(timer);
+
+        arrow.time += step;
+        if (arrow.left_animated)
+            arrow.style.left = (arrow.start_left + (Math.sin(arrow.time) * 10)) + "px";
+        if (arrow.top_animated)
+            arrow.style.top = (arrow.start_top + (Math.sin(arrow.time) * 10)) + "px";
+    }
+
+    var timer = setInterval(frame, 10);
+}
+
 function display_hint() {
-    
+    for (var i = 0; i < hint.card_ids.length; i++) {
+        var arrow = document.createElement("div");
+        arrow.setAttribute("class", "arrow");
+        arrow.time = 0;
+
+        if (hint.hinted_color != undefined)
+            arrow.style.color = hint.hinted_color;
+        else
+            arrow.style.color = "lightgray";
+
+        if (place[hint.to_player] == "down_hand") {
+            if (hint.hinted_color != undefined)
+                arrow.innerHTML = hint.hinted_color;
+            else
+                arrow.innerHTML = hint.hinted_value;
+            arrow.innerHTML += "<br>";
+
+            arrow.innerHTML += "↓";
+            arrow.start_top = -50;
+            arrow.start_left = 32 + parseInt(hint.card_ids[i]) * 67;
+            arrow.style.top = "-50px";
+            arrow.style.left = (32 + parseInt(hint.card_ids[i]) * 67) + "px";
+            arrow.left_animated = false;
+            arrow.top_animated = true;
+        }
+
+        if (place[hint.to_player] == "upper_hand") {
+            arrow.innerHTML = "↑";
+            arrow.start_top = 50;
+            arrow.start_left = 32 + parseInt(hint.card_ids[i]) * 67;
+            arrow.style.top = "50px";
+            arrow.style.left = (32 + parseInt(hint.card_ids[i]) * 67) + "px";
+            arrow.left_animated = false;
+            arrow.top_animated = true;
+
+            arrow.innerHTML += "<br>";
+                if (hint.hinted_color != undefined)
+            arrow.innerHTML += hint.hinted_color;
+            else
+                arrow.innerHTML += hint.hinted_value;
+        }
+
+        if (place[hint.to_player] == "left_hand") {
+            arrow.innerHTML = "←";
+            if (hint.hinted_color != undefined)
+                arrow.innerHTML += hint.hinted_color;
+            else
+                arrow.innerHTML += hint.hinted_value;
+
+            arrow.start_left = 50;
+            arrow.start_top = 50 + parseInt(hint.card_ids[i]) * 99;
+            arrow.style.left = "50px";
+            arrow.style.top = (50 + parseInt(hint.card_ids[i]) * 99) + "px";
+            arrow.left_animated = true;
+            arrow.top_animated = false;
+        }
+
+        if (place[hint.to_player] == "right_hand") {
+            if (hint.hinted_color != undefined)
+                arrow.innerHTML = hint.hinted_color;
+            else
+                arrow.innerHTML = hint.hinted_value;
+            arrow.innerHTML += "→";
+            arrow.start_left = -50;
+            arrow.start_top = 50 + parseInt(hint.card_ids[i]) * 99;
+            arrow.style.left = arrow.start_left + "px";
+            arrow.style.top = (50 + parseInt(hint.card_ids[i]) * 99) + "px";
+            arrow.left_animated = true;
+            arrow.top_animated = false;
+        }
+
+
+
+        var hand = document.getElementById(place[hint.to_player]);
+        hand.appendChild(arrow);
+        start_animation(arrow);
+    }
 }
 
 function to_solitaire() {

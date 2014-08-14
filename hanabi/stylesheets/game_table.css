@@ -232,3 +232,10 @@
     border-top-left-radius: 0;
     border-top-right-radius: 0;
 }
+
+.arrow {
+    position: absolute;
+    font-size: 20pt;
+    display: inline-block;
+    z-index: 1;
+}

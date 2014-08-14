@@ -117,8 +117,9 @@ function onMessage(msg) {
     }
 
     if (msg.data.indexOf("hint") == 0) {
-        hint.from_id = deserialize(msg.data, "from_id");
-        hint.to_id = deserialize(msg.data, "to_id");
+        hint = {};
+        hint.from_player = deserialize(msg.data, "from_player");
+        hint.to_player = deserialize(msg.data, "to_player");
         hint.hint_type = deserialize(msg.data, "type");
         hint.card_ids = deserialize(msg.data, "card_ids");
         if (hint.hint_type == "color")
