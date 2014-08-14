@@ -116,7 +116,7 @@ class MainPage(webapp2.RequestHandler):
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
-        token = channel.create_channel(user_id, duration_minutes=24*60)
+        token = channel.create_channel(user_id, duration_minutes=1)
         template_values = {
             "token": token,
             "t": user.user_id(),
@@ -298,11 +298,11 @@ class GameStartHandler(webapp2.RequestHandler):
 
 class GameListRefreshHandler(webapp2.RequestHandler):
     def post(self):
-        games_query = Game.query(
+
+        games = games_query = Game.query(
             Game.started == False,
             Game.full == False
-        ).order(-Game.date)
-        games = games_query
+        ).order(-Game.date).fetch()
 
         user_id = self.request.get("user_id")
         start = "add_game_to_list?"

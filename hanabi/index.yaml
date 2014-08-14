@@ -1,6 +1,7 @@
 indexes:
-- kind: Greeting
-  ancestor: yes
+- kind: Game
   properties:
+  - name: started
+  - name: full
   - name: date
     direction: desc
