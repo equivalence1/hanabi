@@ -47,6 +47,7 @@ def game_state_msg_for_user(game, num):
     msg += "&whose_move=" + str(game.game_state.whose_move)
     msg += "&your_position=" + str(num)
     msg += "&users_count=" + str(game.user_count)
+    msg += "&deck_size=" + str(len(game.game_state.deck))
 
     for user_num in range(game.user_count):
         if (num != user_num):
@@ -259,7 +260,7 @@ class GameStartHandler(webapp2.RequestHandler):
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
-        game.user_count = 4
+        #game.user_count = 4
         game.game_state = GameState()
 
         game.game_state.deck = []
@@ -331,10 +332,11 @@ class GameMoveHandler(webapp2.RequestHandler):
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
         if (game.game_state.life_count == 0):
-            num = 0
-            for user in game.user_id_list:
-                channel.send_message(user, "error?msg=Game Over!")
-                num += 1
+            channel.send_message(user_id, "error?msg=Game Over!")
+            return
+
+        if game.user_id_list.index(user_id) != game.game_state.whose_move:
+            channel.send_message(user_id, "error?msg=Not your turn!")
             return
 
         if (move_type == "junk"):
@@ -430,16 +432,20 @@ class GameMoveHandler(webapp2.RequestHandler):
                 if (color != -1):
                     channel.send_message(
                         user,
-                        "hint?msg=Player " + user_id + " hinted to player " +\
-                        game.user_id_list[user_position] + " that cards number " +\
-                        ", ".join(map(str, card_ids)) + "are all have color " + color_by_number[color]
+                        "hint?from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=color" +\
+                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&hinted_color=" + color_by_number[color]
                     )
                 else:
                     channel.send_message(
                         user,
-                        "hint?msg=Player " + user_id + " hinted to player " +\
-                        game.user_id_list[user_position] + " that cards number " +\
-                        ", ".join(map(str, card_ids)) + "are all have value " + str(value)
+                        "hint?from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=value" +\
+                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&hinted_value=" + str(value)
                     )
 
             num = 0
@@ -447,6 +453,8 @@ class GameMoveHandler(webapp2.RequestHandler):
                 channel.send_message(user, game_state_msg_for_user(game, num))
                 num += 1
 
+        game.game_state.whose_move += 1
+        game.game_state.whose_move %= game.user_count
         game.put()
 
 

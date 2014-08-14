@@ -86,7 +86,7 @@
     display: inline-block;
     font-family: Moonlight;
     font-size: 36pt;
-    margin: 3px;
+    margin-right: 3px;
 }
 
 .card_solitaire {
@@ -140,10 +140,10 @@
     clear: both;
 }
 
-.score_message {
-    position: relative;
+.info_message {
+    position: absolute;
+    top: 0px;
     width: 75px;
-    float: right;
     border: 2px solid black;
     border-radius: 6px;
     background-color: darkblue;

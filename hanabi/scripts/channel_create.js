@@ -5,7 +5,7 @@ socket.onerror = onError;
 socket.onclose = onClose;
 
 function sendMessage(path, opt_param) {
-    path += '?g=' + "my_game";
+    path += '?g=' + "g";
     if (opt_param) {
         path += '&' + opt_param;
     }
@@ -79,6 +79,7 @@ function onMessage(msg) {
         game_state.whose_move = deserialize(msg.data, "whose_move");
         game_state.my_position = parseInt(deserialize(msg.data, "your_position"));
         game_state.users_count = deserialize(msg.data, "users_count");
+        game_state.deck_size = deserialize(msg.data, "deck_size");
 
         game_state.hand = [];
         for (i = 0; i < game_state.users_count; i++) {
@@ -113,6 +114,17 @@ function onMessage(msg) {
 
         display_game_table();
         update_game_table();
+    }
+
+    if (msg.data.indexOf("hint") == 0) {
+        hint.from_id = deserialize(msg.data, "from_id");
+        hint.to_id = deserialize(msg.data, "to_id");
+        hint.hint_type = deserialize(msg.data, "type");
+        hint.card_ids = deserialize(msg.data, "card_ids");
+        if (hint.hint_type == "color")
+            hint.hinted_color = deserialize(msg.data, "hinted_color");
+        else
+            hint.hinted_value = deserialize(msg.data, "hinted_value");
     }
 
     if (msg.data.indexOf("add_game_to_list") == 0) {

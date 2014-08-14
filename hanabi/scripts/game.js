@@ -6,13 +6,13 @@ color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 if (!Array.prototype.last){
     Array.prototype.last = function(){
         return this[this.length - 1];
-    };
-};
+    }
+}
 
 function update_game_table() {
     var i = 0;
 
-    var place = [];
+    place = [];
     place[game_state.my_position] = "down_hand";
     if (game_state.users_count == 2) {
         place[((game_state.my_position + 1) % 2)] = "upper_hand";
@@ -39,9 +39,16 @@ function update_game_table() {
     table_chips.innerHTML = "";
 
     var scores = document.createElement("div");
-    scores.setAttribute("class", "score_message");
+    scores.setAttribute("class", "info_message");
+    scores.style.left = "75px";
     scores.innerHTML = "Scores: " + game_state.scores;
     table_chips.appendChild(scores);
+
+    var deck_size = document.createElement("div");
+    deck_size.setAttribute("class", "info_message");
+    deck_size.style.left = "0px";
+    deck_size.innerHTML = "Deck: " + game_state.deck_size;
+    table_chips.appendChild(deck_size);
 
     for (i = 0; i < 3 - game_state.life; i++) {
         var dead_life = document.createElement("div");
@@ -82,6 +89,11 @@ function update_game_table() {
     add_cards_to_solitaire(table_solitaire, game_state.solitaire);
 
     add_cards_to_junk(table_junk, game_state.junk);
+
+    if (hint != {}) {
+        display_hint();
+        hint = {};
+    }
 }
 
 function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
@@ -190,17 +202,29 @@ function add_cards_to_junk(junk, cards) {
     }
 }
 
+function display_hint() {
+    
+}
+
 function to_solitaire() {
     sendMessage(
         "/move",
-         "game_name=" + game_name + "&user_id=" + user_id + "&type=solitaire" + "&user_position=" + game_state.my_position + "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
+         "game_name=" + game_name +
+         "&user_id=" + user_id +
+         "&type=solitaire" +
+         "&user_position=" + game_state.my_position +
+         "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
     )
 }
 
 function to_junk() {
     sendMessage(
         "/move",
-         "game_name=" + game_name + "&user_id=" + user_id + "&type=junk" + "&user_position=" + game_state.my_position + "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
+        "game_name=" + game_name +
+        "&user_id=" + user_id +
+        "&type=junk" +
+        "&user_position=" + game_state.my_position +
+        "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
     )
 }
 
@@ -211,7 +235,12 @@ function color_hint() {
 
     sendMessage(
         "/move",
-        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whose_hand + "&color=" + color + "&value=" + val
+        "game_name=" + game_name +
+        "&user_id=" + user_id +
+        "&type=hint" +
+        "&user_position=" + whose_hand +
+        "&color=" + color +
+        "&value=" + val
     )
 }
 
@@ -222,6 +251,11 @@ function value_hint() {
 
     sendMessage(
         "/move",
-        "game_name=" + game_name + "&user_id=" + user_id + "&type=hint" + "&user_position=" + whose_hand + "&color=" + color + "&value=" + val
+        "game_name=" + game_name +
+        "&user_id=" + user_id +
+        "&type=hint" +
+        "&user_position=" + whose_hand +
+        "&color=" + color +
+        "&value=" + val
     )
 }
