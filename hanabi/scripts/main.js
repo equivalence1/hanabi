@@ -95,11 +95,5 @@ function update_online_list(count, user_str) {
 }
 
 function refresh() {
-    var game_list = document.getElementById("game_list");
-
-    while (game_list.firstChild) {
-        game_list.removeChild(game_list.firstChild);
-    }
-
     sendMessage("/game_list_refresh", "user_id=" + user_id);
 }

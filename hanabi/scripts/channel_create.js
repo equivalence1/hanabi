@@ -40,7 +40,6 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("joined") === 0) {
         game_name = deserialize(msg.data, "game_name");
-        game_url = deserialize(msg.data, "game_url");
         document.getElementById("last").innerHTML = msg.data;
         var users_count = deserialize(msg.data, "users_count");
         var users_str = deserialize(msg.data, "users_list");
@@ -56,7 +55,6 @@ function onMessage(msg) {
     }
 
     if (msg.data.indexOf("created") === 0) {
-        game_url = deserialize(msg.data, "game_url");
         var users_count = deserialize(msg.data, "users_count");
         var users_str = deserialize(msg.data, "users_list");
         update_online_list(users_count, users_str);
@@ -129,6 +127,12 @@ function onMessage(msg) {
     }
 
     if (msg.data.indexOf("add_game_to_list") == 0) {
+        var game_list = document.getElementById("game_list");
+
+        while (game_list.firstChild) {
+            game_list.removeChild(game_list.firstChild);
+        }
+
         var N = deserialize(msg.data, "num");
         for (i = 0; i < N; i++) {
             var game_name_i = deserialize(msg.data, "game_name" + i);

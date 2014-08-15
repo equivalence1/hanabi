@@ -160,10 +160,43 @@ class GameCreateHandler(webapp2.RequestHandler):
 
         channel.send_message(
             user_id,
-            "created?game_url=" + game.key.urlsafe() +
-            "&users_count=" + str(game.user_count) +
+            "created?&users_count=" + str(game.user_count) +
             "&users_list=" + user_id
         )
+
+
+@ndb.transactional(retries=4)
+def add_user_to_game(game_url, game_name, user_id, entered_password):
+    game = ndb.Key(urlsafe=game_url).get()
+
+    if entered_password != game.password:
+        logging.info(
+            "Wrong password for " + game_name + ", entered: " +
+            entered_password + ", real: " + game.password
+        )
+        channel.send_message(user_id, "error?msg=Wrong password")
+        return False
+
+    if game.max_user_count <= game.user_count:
+        logging.info(game_name + " already full")
+        channel.send_message(user_id, "error?msg=game already full")
+        return False
+
+    if user_id in game.user_id_list:
+        logging.info(user_id + " already in " + game_name)
+        channel.send_message(
+            user_id,
+            "error?msg=you are already in this game"
+        )
+        return False
+
+    game.user_id_list.append(user_id)
+    game.user_count += 1
+    if (game.user_count >= game.max_user_count):
+        game.full = True
+
+    game.put()
+    return True
 
 
 class JoinGame(webapp2.RequestHandler):
@@ -180,58 +213,33 @@ class JoinGame(webapp2.RequestHandler):
             channel.send_message(user_id, "error?msg=Wrong game name")
             return
 
-        game = games[0]
+        game_url = games[0].key.urlsafe()
+        if not add_user_to_game(game_url, game_name, user_id, entered_password):
+            return
+        else:
+            game = Game.query(Game.name == game_name).fetch(1)[0]
 
-        if entered_password != game.password:
             logging.info(
-                "Wrong password for " + game_name + ", entered: " +
-                entered_password + ", real: " + game.password
+                user_id + " successfully joined into game named " + game_name
             )
-            channel.send_message(user_id, "error?msg=Wrong password")
-            return
+            logging.info("Now in game are: " + ', '.join(game.user_id_list))
 
-        if game.max_user_count <= game.user_count:
-            logging.info(game_name + " already full")
-            channel.send_message(user_id, "error?msg=game already full")
-            return
-
-        if user_id in game.user_id_list:
-            logging.info(user_id + " already in " + game_name)
+            users_str =\
+                "&users_list=" + "<br>".join([user for user in game.user_id_list])
             channel.send_message(
                 user_id,
-                "error?msg=you are already in this game"
+                "joined?&game_name=" + game_name +
+                "&started=" + str(game.started) +
+                "&users_count=" + str(game.user_count) + users_str
             )
-            pass
 
-        game.user_id_list.append(user_id)
-        game.user_count += 1
-        if (game.user_count >= game.max_user_count):
-            game.full = True
-
-        game.put()
-
-        logging.info(
-            user_id + " successfully joined into game named " + game_name
-        )
-        logging.info("Now in game are: " + ', '.join(game.user_id_list))
-
-        users_str =\
-            "&users_list=" + "<br>".join([user for user in game.user_id_list])
-        channel.send_message(
-            user_id,
-            "joined?game_url=" + game.key.urlsafe() +
-            "&game_name=" + game_name +
-            "&started=" + str(game.started) +
-            "&users_count=" + str(game.user_count) + users_str
-        )
-
-        for user in game.user_id_list:
-            if user != user_id:
-                channel.send_message(
-                    user,
-                    "update_online?users_count=" + str(game.user_count) +
-                    users_str
-                )
+            for user in game.user_id_list:
+                if user != user_id:
+                    channel.send_message(
+                        user,
+                        "update_online?users_count=" + str(game.user_count) +
+                        users_str
+                    )
 
 
 class SendChatMessage(webapp2.RequestHandler):
