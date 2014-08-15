@@ -299,7 +299,7 @@ class GameStartHandler(webapp2.RequestHandler):
 class GameListRefreshHandler(webapp2.RequestHandler):
     def post(self):
 
-        games = games_query = Game.query(
+        games = Game.query(
             Game.started == False,
             Game.full == False
         ).order(-Game.date).fetch()
@@ -351,6 +351,9 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
+            game.game_state.whose_move += 1
+            game.game_state.whose_move %= game.user_count
+
             num = 0
             for user_id in game.user_id_list:
                 channel.send_message(user_id, game_state_msg_for_user(game, num))
@@ -401,6 +404,9 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
+            game.game_state.whose_move += 1
+            game.game_state.whose_move %= game.user_count
+
             num = 0
             for user in game.user_id_list:
                 channel.send_message(user, game_state_msg_for_user(game, num))
@@ -448,13 +454,14 @@ class GameMoveHandler(webapp2.RequestHandler):
                         "&hinted_value=" + str(value)
                     )
 
+            game.game_state.whose_move += 1
+            game.game_state.whose_move %= game.user_count
+
             num = 0
             for user in game.user_id_list:
                 channel.send_message(user, game_state_msg_for_user(game, num))
                 num += 1
 
-        game.game_state.whose_move += 1
-        game.game_state.whose_move %= game.user_count
         game.put()
 
 

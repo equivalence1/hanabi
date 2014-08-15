@@ -35,6 +35,19 @@ function update_game_table() {
     var table_chips = document.getElementById("chips");
     table_chips.innerHTML = "";
 
+    var move_info = document.createElement("div");
+    move_info.setAttribute("class", "info_message");
+    move_info.style.left = "0px";
+    move_info.style.width = "150px";
+
+    if (game_state.whose_move == game_state.my_position) {
+        move_info.innerHTML = " It's your move!";
+    } else {
+        move_info.innerHTML = " It's not your move!";
+    }
+    move_info.style.top = "280px";
+    table_chips.appendChild(move_info);
+
     var scores = document.createElement("div");
     scores.setAttribute("class", "info_message");
     scores.style.left = "75px";
