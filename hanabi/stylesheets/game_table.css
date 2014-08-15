@@ -239,3 +239,11 @@
     display: inline-block;
     z-index: 1;
 }
+
+.junk_sort {
+    float: left;
+}
+
+.junk_tabs {
+    float: right;
+}
