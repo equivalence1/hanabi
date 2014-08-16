@@ -245,5 +245,7 @@
 }
 
 .junk_tabs {
-    float: right;
+    display: inline;
+    width: 380px !important;
+    height: 150px;
 }

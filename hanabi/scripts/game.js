@@ -30,8 +30,10 @@ function update_game_table() {
 
     var table_solitaire = document.getElementById("solitaire");
     table_solitaire.innerHTML = "";
-    var table_junk = document.getElementById("junk");
-    table_junk.innerHTML = "";
+    var time_junk = document.getElementById("time_tab");
+    time_junk.innerHTML = "";
+    var color_junk = document.getElementById("color_tab");
+    color_junk.innerHTML = "";
     var table_chips = document.getElementById("chips");
     table_chips.innerHTML = "";
 
@@ -64,7 +66,8 @@ function update_game_table() {
 
     add_cards_to_solitaire(table_solitaire, game_state.solitaire);
 
-    add_cards_to_junk(table_junk, game_state.junk);
+    add_cards_to_junk(time_tab, game_state.junk);
+    add_cards_to_junk(color_tab, game_state.junk);
 
     if (hint != undefined) {
         display_hint();
@@ -199,20 +202,48 @@ function add_cards_to_solitaire(sol, cards) {
 }
 
 function add_cards_to_junk(junk, cards) {
-    for (var i = 0; i < cards.length; i++) {
-        var new_mini_card = document.createElement("div");
-        new_mini_card.setAttribute("class", "mini_card");
+    if (junk.id === "time_tab")
+        for (var i = 0; i < cards.length; i++) {
+            var new_mini_card = document.createElement("div");
+            new_mini_card.setAttribute("class", "mini_card");
 
-        var card_content = document.createElement("div");
-        card_content.setAttribute("class", "mini_card_content");
+            var card_content = document.createElement("div");
+            card_content.setAttribute("class", "mini_card_content");
 
-        var span = document.createElement("span");
-        span.setAttribute("class", color_by_number[cards[i].color] + "_card");
-        span.innerHTML = cards[i].value;
+            var span = document.createElement("span");
+            span.setAttribute("class", color_by_number[cards[i].color] + "_card");
+            span.innerHTML = cards[i].value;
 
-        card_content.appendChild(span);
-        new_mini_card.appendChild(card_content);
-        junk.appendChild(new_mini_card);
+            card_content.appendChild(span);
+            new_mini_card.appendChild(card_content);
+            junk.appendChild(new_mini_card);
+        }
+    else {
+        var color_tab_cards = [[], [], [], [], []];
+        for (var i = 0; i < cards.length; i++) {
+            color_tab_cards[cards[i].color - 1].push(cards[i].value);
+        }
+        for (var i = 0; i < 5; i++) {
+            color_tab_cards[i].sort();
+            for (var j = 0; j < color_tab_cards[i].length; j++) {
+                var new_mini_card = document.createElement("div");
+                new_mini_card.setAttribute("class", "mini_card");
+
+                var card_content = document.createElement("div");
+                card_content.setAttribute("class", "mini_card_content");
+
+                var span = document.createElement("span");
+                span.setAttribute("class", color_by_number[i + 1] + "_card");
+                span.innerHTML = color_tab_cards[i][j];
+
+                card_content.appendChild(span);
+                new_mini_card.appendChild(card_content);
+                junk.appendChild(new_mini_card);
+            }
+
+            var br = document.createElement("br");
+            junk.appendChild(br);
+        }
     }
 }
 
