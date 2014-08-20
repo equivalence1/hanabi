@@ -81,6 +81,7 @@ class GameState(ndb.Model):
     solitaire = ndb.StructuredProperty(Card, repeated=True)
     junk = ndb.StructuredProperty(Card, repeated=True)
     user_hands = ndb.LocalStructuredProperty(Hand, repeated=True)
+    moves_after_empty_deck = ndb.IntegerProperty(default=0)
 
     life_count = ndb.IntegerProperty()
     hint_count = ndb.IntegerProperty()
@@ -355,7 +356,12 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
             third_part = game.game_state.user_hands[user_position].cards[card_num:]
-            new_card = game.game_state.deck.pop()
+
+            try:
+                new_card = game.game_state.deck.pop()
+            except:
+                game.game_state.moves_after_empty_deck += 1
+                new_card = Card(color=0, value=0)
 
             game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
@@ -408,7 +414,12 @@ class GameMoveHandler(webapp2.RequestHandler):
             game.game_state.user_hands[user_position].cards.pop(card_num)
             first_part = game.game_state.user_hands[user_position].cards[:card_num]
             third_part = game.game_state.user_hands[user_position].cards[card_num:]
-            new_card = game.game_state.deck.pop()
+
+            try:
+                new_card = game.game_state.deck.pop()
+            except:
+                game.game_state.moves_after_empty_deck += 1
+                new_card = Card(color=0, value=0)
 
             game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
 
@@ -462,6 +473,9 @@ class GameMoveHandler(webapp2.RequestHandler):
                         "&hinted_value=" + str(value)
                     )
 
+            if (len(game.game_state.deck) == 0):
+                game.game_state.moves_after_empty_deck += 1
+
             game.game_state.whose_move += 1
             game.game_state.whose_move %= game.user_count
 
@@ -469,6 +483,15 @@ class GameMoveHandler(webapp2.RequestHandler):
             for user in game.user_id_list:
                 channel.send_message(user, game_state_msg_for_user(game, num))
                 num += 1
+
+        if (game.user_count == game.game_state.moves_after_empty_deck):
+            num = 0
+            for user in game.user_id_list:
+                channel.send_message(user, game_state_msg_for_user(game, num))
+                channel.send_message(user, "error?msg=Game Over!")
+                num += 1
+            game.key.delete()
+            return            
 
         game.put()
 

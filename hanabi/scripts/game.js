@@ -130,7 +130,7 @@ function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
     card_over.setAttribute("card_id_in_hand", card_id_in_hand);
     card_over.setAttribute("id", whose_hand * 10 + card_id_in_hand);
 
-    if (card != undefined) {
+    if (card != undefined && card.value != 0) {
         card_over.setAttribute("card_color", card.color);
         card_over.setAttribute("card_value", card.value);
     }
@@ -140,13 +140,16 @@ function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
     var btn2 = document.createElement("button");
 
     card_content.appendChild(span);
-    card_over.appendChild(btn1);
-    card_over.appendChild(btn2);
+    if ((card != undefined && card.value != 0) || (card == undefined)) {
+        card_over.appendChild(btn1);
+        card_over.appendChild(btn2);
+    }
 
-    if (card == undefined) {
+    if (card == undefined || card.value == 0) {
         span.setAttribute("class", "undefined_card");
         span.setAttribute("value", "?");
-        span.innerHTML = "?";
+        if (card == undefined)
+            span.innerHTML = "?";
 
         btn1.setAttribute("class", "btn btn-success card_btn");
         btn1.innerHTML = "Solitaire";
