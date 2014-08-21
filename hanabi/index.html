@@ -70,43 +70,41 @@
         </div>
 
         <div id="main_content">
-            <div class="room_list">
-                <div class="container1">
-                    <div class="room_list_head">
-                        <h3> Room list: </h3>
-                        <div id="refresh_btn" title="refresh" onclick="refresh()">
-                        </div>
-                    </div>
-                    <div class="game_list" id="game_list" style="overflow-y: scroll">
-                        <script>
-                            refresh();
-                        </script>
-                    </div>
+            <div class="panel panel-info room_list">
+                <div class="panel-heading">
+                    <h3> Room list </h3>
+                    <button type="button" class="btn btn-default refresh_btn btn-xs" onclick="refresh()">
+                        <span class="glyphicon glyphicon-refresh"></span>
+                    </button>
+                </div>
+                <div class="panel-body game_list" id="game_list" style="overflow-y: scroll">
+                    <script>
+                        refresh();
+                    </script>
                 </div>
             </div>
 
-            <div class="main_menu">
-                <div class="container1">
-                    <div class="game_create">
-                        <h3> Create your own game! </h3>
+            <div class="panel panel-success main_menu">
 
-                        <div>
-                            <input id="game_name" type="text">
-                            <br>
-                            <input id="password" type="text">
-                            <br>
-                            <button type="button" class="btn btn-success" onclick="create_game()">Create Game</button>
-                        </div>
-
-                    </div>
+                <div class="panel-heading">
+                    <h3> Create your own game! </h3>
                 </div>
+
+                <div class="panel-body">                                                    
+
+                    <input type="text" class="form-control" placeholder="Game name" maxlength="20" size="20" id="game_name" style="width: 150px">
+                    <input type="text" class="form-control" placeholder="Game password" size="20" id="password"  style="width: 150px">
+                    <button type="button" class="btn btn-success create_btn" onclick="create_game()">Create Game</button>
+
+                </div>
+
             </div>
 
-            <div class="friend_zone">
+           <!-- <div class="friend_zone">
                 <div class="container1">
                     <p> Friends are going to be here </p>
                 </div>
-            </div>
+            </div> -->
 
         </div>
 

@@ -20,15 +20,7 @@ body {
     margin-left: 2px;
     width: 399px;
 }
-/*
-.main_menu input {
-    margin-left: 16px;
-}
 
-.main_menu button {
-    margin-left: 16px;
-}
-*/
 .friend_zone {
     background-color: blue;
     display: inline-block;
@@ -48,6 +40,7 @@ p {
 
 .game_list {
     position: relative;
+    height: 135px;
 }
 
 .game_div {
@@ -95,4 +88,16 @@ p {
     margin-right: 16px;
     margin-top: 20px;
     border-radius: 10px;
+}
+
+.create_btn {
+    margin-top: 3px;
+}
+
+body, body.modal-open {
+    padding-right: 0 !important;
+}
+
+body.modal-open {
+    overflow-y: hidden;
 }

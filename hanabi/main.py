@@ -107,11 +107,6 @@ class Game(ndb.Model):
 class MainPage(webapp2.RequestHandler):
     def get(self):
         user_id = str(random.randint(0, (1 << 31) - 1))
-        user = users.get_current_user()
-
-        if not user:
-            self.redirect(users.create_login_url(self.request.uri))
-            return
 
         games_query = Game.query(
             Game.started == False, Game.full == False).order(-Game.date)
@@ -120,7 +115,7 @@ class MainPage(webapp2.RequestHandler):
         token = channel.create_channel(user_id, duration_minutes=2*60)
         template_values = {
             "token": token,
-            "t": user.user_id(),
+            "t": user_id,
             "games": games,
             "user_id": user_id
         }
@@ -342,6 +337,7 @@ class GameMoveHandler(webapp2.RequestHandler):
 
         if (game.game_state.life_count == 0):
             channel.send_message(user_id, "error?msg=Game Over!")
+            game.key.delete()
             return
 
         if game.user_id_list.index(user_id) != game.game_state.whose_move:

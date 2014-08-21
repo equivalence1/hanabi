@@ -66,8 +66,8 @@ function add_to_list(name, fill, locked) {
     game_name.setAttribute("class", "game_name");
     game_name.innerHTML = name + "    " + fill;
 
-    var join_button = document.createElement("div");
-    join_button.setAttribute("class", "join_button");
+    var join_button = document.createElement("button");
+    join_button.setAttribute("class", "btn btn-info btn-xs join_button");
     join_button.innerHTML = "join";
     join_button.setAttribute("room_name", name);
     join_button.onclick = join_room;
