@@ -142,4 +142,29 @@ function onMessage(msg) {
             add_to_list(game_name_i, users_count + "/" + max_users_count, locked);
         }
     }
+/*
+    if (msg.data.indexOf("error") == 0) {
+        var user_alert = document.createElement("div");
+        user_alert.class = "alert alert-warning alert-dismissible";
+        user_alert.role = "alert";
+
+        var btn = document.createElement("button");
+        btn.type = "button";
+        btn.class = "close";
+        btn.dataDismiss = "alert";
+
+        var sp1 = document.createElement("span");
+        sp1.ariaHidden = "true";
+        sp1.innerHTML = "&times;";
+
+        var sp2 = document.createElement("span");
+        sp2.class = "sr-only";
+        sp2.innerHTML = "Close";
+
+        btn.appendChild(sp1);
+        btn.appendChild(sp2);
+        user_alert.appendChild(btn);
+        user_alert.innerHTML = "<strong>Error!</strong> " + msg.data;
+    }
+*/
 }
