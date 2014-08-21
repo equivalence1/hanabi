@@ -545,6 +545,16 @@ class DisconnectionHandler(webapp2.RequestHandler):
             update_online_users(game_url)
 
 
+class LeaveHandler(webapp2.RequestHandler):
+    def post(self):
+        logging.info("LeaveHandler post")
+
+        user_id = self.request.get("user_id")
+        game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+        if user_disconnect(user_id, game_url):
+            update_online_users(game_url)
+
+
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
@@ -553,5 +563,6 @@ application = webapp2.WSGIApplication([
     ("/send_chat_message", SendChatMessage),
     ("/game_list_refresh", GameListRefreshHandler),
     ("/move", GameMoveHandler),
+    ("/leave", LeaveHandler),
     ("/_ah/channel/disconnected/", DisconnectionHandler)
 ], debug = True)
