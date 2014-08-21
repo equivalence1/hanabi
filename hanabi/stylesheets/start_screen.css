@@ -49,8 +49,13 @@ p {
     border: 1px solid #bce8f1;
     border-radius: 2px;
     display: inline-block;
-    height: 27px;
+    height: 26px;
     width: 320px;
+}
+
+.game_div p {
+    float: left;
+    margin-top: -2px;
 }
 
 .game_name {

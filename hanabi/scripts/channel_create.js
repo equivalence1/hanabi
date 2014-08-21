@@ -142,29 +142,74 @@ function onMessage(msg) {
             add_to_list(game_name_i, users_count + "/" + max_users_count, locked);
         }
     }
-/*
-    if (msg.data.indexOf("error") == 0) {
+
+    if (msg.data.indexOf("alert") == 0) {
+        var cont = document.getElementById("alert_modal_content");
         var user_alert = document.createElement("div");
-        user_alert.class = "alert alert-warning alert-dismissible";
-        user_alert.role = "alert";
 
         var btn = document.createElement("button");
-        btn.type = "button";
-        btn.class = "close";
-        btn.dataDismiss = "alert";
+        btn.setAttribute("type", "button");
+        btn.setAttribute("class", "close");
+        btn.setAttribute("data-dismiss", "alert");
 
         var sp1 = document.createElement("span");
-        sp1.ariaHidden = "true";
         sp1.innerHTML = "&times;";
+        sp1.setAttribute("aria-hidden", "true");
 
         var sp2 = document.createElement("span");
-        sp2.class = "sr-only";
         sp2.innerHTML = "Close";
+        sp2.setAttribute("class", "sr-only");
 
         btn.appendChild(sp1);
         btn.appendChild(sp2);
-        user_alert.appendChild(btn);
-        user_alert.innerHTML = "<strong>Error!</strong> " + msg.data;
     }
-*/
+
+    if (msg.data.indexOf("error") != -1) {
+//        document.getElementsByTagName("body")[0].insertAdjacentHTML( 'beforeend', al_wrap );
+        user_alert.innerHTML = "<strong>Error!</strong> " + deserialize(msg.data, "msg");
+        user_alert.appendChild(btn);
+        user_alert.setAttribute("class", "alert alert-danger alert-dismissible");
+        user_alert.style.marginBottom = "0px";
+        user_alert.setAttribute("role", "alert");
+
+        cont.appendChild(user_alert);
+        $("#alertModal").modal("show");       
+    }
+
+    if (msg.data.indexOf("over") != -1) {
+        if (game.game_state.solitaire.length != 25)
+            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game.game_state.solitaire.length;
+        else
+            user_alert.innerHTML = "<strong>Congratulations! You won the game!</strong>";
+        user_alert.appendChild(btn);
+        if (game.game_state.solitaire.length == 25)
+            user_alert.setAttribute("class", "alert alert-success alert-dismissible user_alert");
+        else
+            user_alert.setAttribute("class", "alert alert-info alert-dismissible user_alert");
+        user_alert.setAttribute("role", "alert");
+        user_alert.style.marginBottom = "0px";
+
+        cont.appendChild(user_alert);
+        $("#alertModal").modal("show");       
+    }
+
+    if (msg.data.indexOf("info") != -1) {
+        user_alert.innerHTML = "<strong>Error!</strong> " + deserialize(msg.data, "msg");
+        user_alert.appendChild(btn);
+        user_alert.setAttribute("class", "alert alert-info alert-dismissible user_alert");
+        user_alert.setAttribute("role", "alert");
+        user_alert.style.marginBottom = "0px";
+
+        cont.appendChild(user_alert);
+        $("#alertModal").modal("show");       
+    }
+        
+        $(".alert").on("closed.bs.alert", function () {
+            $("#alertModal").modal("hide");
+        });
+
+        $("#alertModal").on("hidden.bs.modal", function() {
+            $(".alert").alert("close");
+        });
+
 }

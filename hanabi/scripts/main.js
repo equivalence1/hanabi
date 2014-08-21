@@ -64,7 +64,7 @@ function add_to_list(name, fill, locked) {
 
     var game_name = document.createElement("div");
     game_name.setAttribute("class", "game_name");
-    game_name.innerHTML = name + "    " + fill;
+    game_name.innerHTML = "<p> " + name + "    " + fill + " </p>";
 
     var join_button = document.createElement("button");
     join_button.setAttribute("class", "btn btn-info btn-xs join_button");
@@ -78,7 +78,7 @@ function add_to_list(name, fill, locked) {
     if (locked.toString() === "True") {
         var span = document.createElement("span");
         span.setAttribute("class", "glyphicon glyphicon-lock");
-        span.setAttribute("style", "float: right; margin-top: 5px");
+        span.setAttribute("style", "float: right; margin-top: 5px; margin-right: 5px;");
         span.setAttribute("data-toggle", "tooltip");
         span.setAttribute("data-placement", "top");
         span.setAttribute("title", "This room has password");

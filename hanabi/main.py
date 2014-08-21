@@ -137,7 +137,7 @@ class GameCreateHandler(webapp2.RequestHandler):
             logging.info("Game with name " + game_name + " already exists")
             channel.send_message(
                 user_id,
-                "error?msg=Game with name " + game_name + " already exists"
+                "alert?type=error&msg=Game with name " + game_name + " already exists"
             )
             return
 
@@ -170,19 +170,19 @@ def add_user_to_game(game_url, game_name, user_id, entered_password):
             "Wrong password for " + game_name + ", entered: " +
             entered_password + ", real: " + game.password
         )
-        channel.send_message(user_id, "error?msg=Wrong password")
+        channel.send_message(user_id, "alert?type=error&msg=Wrong password")
         return False
 
     if game.max_user_count <= game.user_count:
         logging.info(game_name + " already full")
-        channel.send_message(user_id, "error?msg=game already full")
+        channel.send_message(user_id, "alert?type=error&msg=game already full")
         return False
 
     if user_id in game.user_id_list:
         logging.info(user_id + " already in " + game_name)
         channel.send_message(
             user_id,
-            "error?msg=you are already in this game"
+            "alert?type=error&msg=you are already in this game"
         )
         return False
 
@@ -206,7 +206,7 @@ class JoinGame(webapp2.RequestHandler):
         games = Game.query(Game.name == game_name).fetch(1)
         if len(games) != 1:
             logging.info("Wrong game name " + game_name)
-            channel.send_message(user_id, "error?msg=Wrong game name")
+            channel.send_message(user_id, "alert?type=error&msg=Wrong game name")
             return
 
         game_url = games[0].key.urlsafe()
@@ -336,12 +336,12 @@ class GameMoveHandler(webapp2.RequestHandler):
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
         if (game.game_state.life_count == 0):
-            channel.send_message(user_id, "error?msg=Game Over!")
+            channel.send_message(user_id, "alert?type=error&msg=Game Over!")
             game.key.delete()
             return
 
         if game.user_id_list.index(user_id) != game.game_state.whose_move:
-            channel.send_message(user_id, "error?msg=Not your turn!")
+            channel.send_message(user_id, "alert?type=error&msg=Not your turn!")
             return
 
         if (move_type == "junk"):
@@ -379,10 +379,10 @@ class GameMoveHandler(webapp2.RequestHandler):
                     mx = max(mx, card.value)
 
             if (mx != cur_card.value - 1):
-                channel.send_message(user_id, "error?msg=Cant put this card to solitaire")
+                channel.send_message(user_id, "alert?type=info&msg=Cant put this card to solitaire")
                 for user in game.user_id_list:
                     if (user != user_id):
-                        channel.send_message(user, "error?msg=User " + user_id + " tried to put card to solitaire and failed")
+                        channel.send_message(user, "alert?type=info&msg=User " + user_id + " tried to put card to solitaire and failed")
 
                 game.game_state.junk.append(cur_card)
                 game.game_state.life_count -= 1
@@ -390,7 +390,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                     num = 0
                     for user in game.user_id_list:
                         channel.send_message(user, game_state_msg_for_user(game, num))
-                        channel.send_message(user, "error?msg=Game Over!")
+                        channel.send_message(user, "alert?type=over&msg=Game Over!")
                         num += 1
                     game.key.delete()
                     return
@@ -434,7 +434,7 @@ class GameMoveHandler(webapp2.RequestHandler):
             value = int(self.request.get("value"))
 
             if (game.game_state.hint_count == 0):
-                channel.send_message(user_id, "error?msg=U have no hints anymore")
+                channel.send_message(user_id, "alert?type=error&msg=U have no hints anymore")
                 return
 
             game.game_state.hint_count -= 1
@@ -484,7 +484,7 @@ class GameMoveHandler(webapp2.RequestHandler):
             num = 0
             for user in game.user_id_list:
                 channel.send_message(user, game_state_msg_for_user(game, num))
-                channel.send_message(user, "error?msg=Game Over!")
+                channel.send_message(user, "alert?type=over&msg=Game Over!")
                 num += 1
             game.key.delete()
             return            
@@ -502,7 +502,7 @@ def user_disconnect(user_id, game_url):
     if game.started:
         for user in game.user_id_list:
             if user != user_id:
-                channel.send_message(user, "error?KABOOM user #" + user_id + " gone!!!")
+                channel.send_message(user, "alert?type=error&msg=KABOOM user #" + user_id + " gone!!!")
         game.key.delete()
         return False
 
