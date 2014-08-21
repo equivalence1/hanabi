@@ -4,6 +4,8 @@ socket.onmessage = onMessage;
 socket.onerror = onError;
 socket.onclose = onClose;
 
+queue_to_show = [];
+
 function sendMessage(path, opt_param) {
     path += '?g=' + "g";
     if (opt_param) {
@@ -172,25 +174,23 @@ function onMessage(msg) {
         user_alert.style.marginBottom = "0px";
         user_alert.setAttribute("role", "alert");
 
-        cont.appendChild(user_alert);
-        $("#alertModal").modal("show");       
+        show_in_panel(user_alert);
     }
 
     if (msg.data.indexOf("over") != -1) {
-        if (game.game_state.solitaire.length != 25)
-            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game.game_state.solitaire.length;
+        if (game_state.solitaire.length != 25)
+            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.solitaire.length;
         else
             user_alert.innerHTML = "<strong>Congratulations! You won the game!</strong>";
         user_alert.appendChild(btn);
-        if (game.game_state.solitaire.length == 25)
+        if (game_state.solitaire.length == 25)
             user_alert.setAttribute("class", "alert alert-success alert-dismissible user_alert");
         else
             user_alert.setAttribute("class", "alert alert-info alert-dismissible user_alert");
         user_alert.setAttribute("role", "alert");
         user_alert.style.marginBottom = "0px";
 
-        cont.appendChild(user_alert);
-        $("#alertModal").modal("show");       
+        show_in_panel(user_alert);
     }
 
     if (msg.data.indexOf("info") != -1) {
@@ -200,16 +200,21 @@ function onMessage(msg) {
         user_alert.setAttribute("role", "alert");
         user_alert.style.marginBottom = "0px";
 
-        cont.appendChild(user_alert);
-        $("#alertModal").modal("show");       
+        show_in_panel(user_alert);
     }
         
         $(".alert").on("closed.bs.alert", function () {
             $("#alertModal").modal("hide");
         });
 
-        $("#alertModal").on("hidden.bs.modal", function() {
-            $(".alert").alert("close");
-        });
+}
 
+function show_in_panel(div_to_show) {
+    var cont = document.getElementById("alert_modal_content");
+    if (cont.innerHTML == "") {
+        cont.appendChild(div_to_show);
+        $("#alertModal").modal("show");
+    } else {
+        queue_to_show.push(div_to_show);
+    }
 }

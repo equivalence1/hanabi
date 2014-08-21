@@ -1,3 +1,7 @@
+$( document ).ready(function() {
+    document.getElementById("alert_modal_content").innerHTML = "";    
+});
+
 function go_to_main() {
     hide_all();
     display_main_content();
@@ -24,8 +28,31 @@ function create_game() {
 }
 
 function join_room() {
-    var game_password = prompt("Enter password");
+    var cont = document.getElementById("alert_modal_content");
+    var pan = document.createElement("div");
+    pan.innerHTML = '<div class="panel-heading">Enter the password</div>' +
+    '<div class="panel-body">' +
+    '<input type="text" class="form-control" placeholder="password" id="pass_enter" maxlength="20" size="20" style="width: 150px; maegin-left: auto; margin-right: auto">' +
+    '<button type="button" class="btn btn-primary" style="float: right;" id="enter_btn" ' + 'room_name="' + this.getAttribute("room_name") + '">Enter</button>' +
+    '<button type="button" class="btn btn-default" style="float: right;" onclick="calcel_join()">Cancel</button></div>';
+    pan.setAttribute("class", "panel panel-primary pass_pan");
+    pan.style.marginBottom = "0px";
+    cont.appendChild(pan);
+    document.getElementById("enter_btn").onclick = validate_pass;
+    $("#alertModal").modal("show");
+
+//    var game_password = prompt("Enter password");
+//    sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
+}
+
+function validate_pass() {
+    var game_password = document.getElementById("pass_enter").value;
+    $("#alertModal").modal("hide");
     sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
+}
+
+function cancel_join() {
+    $("#alertModal").modal("hide");
 }
 
 function start_game() {
