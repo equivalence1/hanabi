@@ -58,6 +58,15 @@
             </div>
         </div>
 
+        <script>
+            $("#alertModal").on("hidden.bs.modal", function() {
+                $(".alert").alert("close");
+                document.getElementById("alert_modal_content").innerHTML = "";
+                if (queue_to_show.length != 0)
+                    show_in_panel(queue_to_show.shift());
+            });
+        </script>
+
         <div class="navbar navbar-default" role="navigation" style="top: -2px">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -163,7 +172,7 @@
             <div id="down_hand"></div>
         </div>
 
-        <p id="last" style="clear: both"></p>
+        <p id="last" style="clear: both; display: none;"></p>
 
     </body>
 </html>

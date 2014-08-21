@@ -53,7 +53,7 @@ function update_game_table() {
     var scores = document.createElement("div");
     scores.setAttribute("class", "info_message");
     scores.style.left = "75px";
-    scores.innerHTML = "Scores: " + game_state.scores;
+    scores.innerHTML = "Score: " + game_state.score;
     table_chips.appendChild(scores);
 
     var deck_size = document.createElement("div");

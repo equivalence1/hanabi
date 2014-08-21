@@ -379,7 +379,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                     mx = max(mx, card.value)
 
             if (mx != cur_card.value - 1):
-                channel.send_message(user_id, "alert?type=info&msg=Cant put this card to solitaire")
+                channel.send_message(user_id, "alert?type=info&msg=Can't put this card to solitaire")
                 for user in game.user_id_list:
                     if (user != user_id):
                         channel.send_message(user, "alert?type=info&msg=User " + user_id + " tried to put card to solitaire and failed")
