@@ -1,3 +1,21 @@
+function go_to_main() {
+    hide_all();
+    display_main_content();
+    if (game_name != undefined) {
+        sendMessage("/leave", "user_id=" + user_id + "&game_name=" + game_name);
+        game_name = undefined;
+        game_state = {};
+
+        document.getElementById("game_name").value = "";
+        document.getElementById("password").value = "";
+
+        var game_list = document.getElementById("game_list");
+        while (game_list.firstChild)
+            game_list.removeChild(game_list.firstChild);
+        refresh();
+    }
+}
+
 function create_game() {
     game_name = document.getElementById("game_name").value.toString();
     var game_password = document.getElementById("password").value.toString();
@@ -24,6 +42,10 @@ function hide_all() {
     document.getElementById("chat_room").style.display = "none";
     document.getElementById("start").style.display = "none";
     document.getElementById("game_table").style.display = "none";
+}
+
+function display_main_content() {
+    document.getElementById("main_content").style.display = "";
 }
 
 function display_chat_room() {
