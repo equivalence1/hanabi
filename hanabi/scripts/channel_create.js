@@ -179,7 +179,7 @@ function onMessage(msg) {
 
     if (msg.data.indexOf("over") != -1) {
         if (game_state.score != 25)
-            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.solitaire.length;
+            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.score;
         else
             user_alert.innerHTML = "<strong>Congratulations! You won the game!</strong>";
         user_alert.appendChild(btn);
@@ -194,7 +194,7 @@ function onMessage(msg) {
     }
 
     if (msg.data.indexOf("info") != -1) {
-        user_alert.innerHTML = "<strong>Error!</strong> " + deserialize(msg.data, "msg");
+        user_alert.innerHTML = "<strong>Info!</strong> " + deserialize(msg.data, "msg");
         user_alert.appendChild(btn);
         user_alert.setAttribute("class", "alert alert-info alert-dismissible user_alert");
         user_alert.setAttribute("role", "alert");
