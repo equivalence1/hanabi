@@ -1,5 +1,11 @@
 $( document ).ready(function() {
     document.getElementById("alert_modal_content").innerHTML = "";
+    refresh();
+            $("#alertModal").on("hidden.bs.modal", function() {
+                document.getElementById("alert_modal_content").innerHTML = "";
+                if (queue_to_show.length != 0)
+                    show_in_panel(queue_to_show.shift());
+            });
 });
 
 function go_to_main() {
@@ -17,8 +23,8 @@ function go_to_main() {
         var game_list = document.getElementById("game_list");
         while (game_list.firstChild)
             game_list.removeChild(game_list.firstChild);
-        refresh();
     }
+    refresh();
 }
 
 function create_game() {

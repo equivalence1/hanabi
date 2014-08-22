@@ -17,9 +17,19 @@ function update_game_table() {
     if (game_state.users_count == 2) {
         place[((game_state.my_position + 1) % 2)] = "upper_hand";
     } else {
-        for (i = 1; i < game_state.users_count; i++)
+        for (i = 1; i < game_state.users_count; i++) {
             place[(game_state.my_position + i) % game_state.users_count] = ["left_hand", "upper_hand", "right_hand"][i - 1];
+        }
     }
+
+    for (i = 0; i < 4; i++) {
+        var div = document.getElementById(["left_hand", "upper_hand", "right_hand", "down_hand"][i]);
+        if (div != undefined)
+            div.style.backgroundColor = "rgb(247, 247, 249)";
+    }
+
+    var div = document.getElementById(place[game_state.whose_move]);
+    div.style.backgroundColor = "rgb(223, 240, 216)";
 
     for (i = 0; i < game_state.users_count; i++) {
         var hand = document.getElementById(place[i]);

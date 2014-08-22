@@ -65,14 +65,6 @@
             </div>
         </div>
 
-        <script>
-            $("#alertModal").on("hide.bs.modal", function() {
-                document.getElementById("alert_modal_content").innerHTML = "";
-                if (queue_to_show.length != 0)
-                    show_in_panel(queue_to_show.shift());
-            });
-        </script>
-
         <div class="navbar navbar-default" role="navigation" style="top: -2px">
             <div class="container-fluid">
                 <div class="navbar-header">
@@ -100,9 +92,6 @@
                     </button>
                 </div>
                 <div class="panel-body game_list" id="game_list" style="overflow-y: scroll">
-                    <script>
-                        refresh();
-                    </script>
                 </div>
             </div>
 
@@ -112,7 +101,7 @@
                     <h3> Create your own game! </h3>
                 </div>
 
-                <div class="panel-body">                                                    
+                <div class="panel-body" style="height: 270px">
 
                     <input type="text" class="form-control" placeholder="Game name" maxlength="20" size="20" id="game_name" style="width: 150px">
                     <input type="text" class="form-control" placeholder="Game password" size="20" id="password"  style="width: 150px">
@@ -181,7 +170,7 @@
             <div id="down_hand"></div>
         </div>
 
-        <p id="last" style="clear: both;/* display: none;*/"></p>
+        <p id="last" style="clear: both; display: none;"></p>
 
     </body>
 </html>

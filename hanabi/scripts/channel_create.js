@@ -166,7 +166,7 @@ function onMessage(msg) {
         btn.appendChild(sp2);
     }
 
-    if (msg.data.indexOf("error") != -1) {
+    if (deserialize(msg.data, "type") == "error") {
 //        document.getElementsByTagName("body")[0].insertAdjacentHTML( 'beforeend', al_wrap );
         user_alert.innerHTML = "<strong>Error!</strong> " + deserialize(msg.data, "msg");
         user_alert.appendChild(btn);
@@ -177,7 +177,7 @@ function onMessage(msg) {
         show_in_panel(user_alert);
     }
 
-    if (msg.data.indexOf("over") != -1) {
+    if (deserialize(msg.data, "type") == "over") {
         if (game_state.score != 25)
             user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.score;
         else
@@ -193,7 +193,7 @@ function onMessage(msg) {
         show_in_panel(user_alert);
     }
 
-    if (msg.data.indexOf("info") != -1) {
+    if (deserialize(msg.data, "type") == "info") {
         user_alert.innerHTML = "<strong>Info!</strong> " + deserialize(msg.data, "msg");
         user_alert.appendChild(btn);
         user_alert.setAttribute("class", "alert alert-info alert-dismissible user_alert");
@@ -203,10 +203,6 @@ function onMessage(msg) {
         show_in_panel(user_alert);
     }
         
-        $(".alert").on("closed.bs.alert", function () {
-            $("#alertModal").modal("hide");
-        });
-
 }
 
 function show_in_panel(div_to_show) {
@@ -217,4 +213,7 @@ function show_in_panel(div_to_show) {
     } else {
         queue_to_show.push(div_to_show);
     }
+        $(".alert").on("close.bs.alert", function () {
+            $("#alertModal").modal("hide");
+        });
 }
