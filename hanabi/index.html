@@ -41,7 +41,14 @@
                     </div>
                     
                     <div class="modal-body">
-                        <p>Here will be rules</p>
+                        <p>    There are 5 colors (<span class="red_card">red</span>, <span class="green_card">green</span>, <span class="blue_card">blue</span>, <span class="yellow_card">yellow</span>, <span class="white_card">white</span>) in the deck. In each color 10 cards: 3 cards are «1», 2 cards are «2», «3» and «4» and only one – «5». Also, there are 3 lives and 8 hints.</p>
+                        <p>    Hanabi is a collective game. All players have one goal: maximize the global score – amount of cards laid in solitaire. You can see all the cards in others hands, but not in yours. If there are 2 or 3 players, then each player have 5 cards, if 4 players, then 4 cards.</p>
+                        <p>    Players makes moves one by one. At every move player decides to make one of three: throw one of his cards to junk, lay one of his cards to solitaire or make a hint to another player.</p>
+                        <p>    Junk: that card goes to junk and it can't be played anymore. If deck not empty yet, then player takes new card. Also, if there are less then 8 hints, it increases by one.</p>
+                        <p>    Solitaire: card goes to solitaire only if there are already card of the same color and previous value (or empty for «1»). Otherwise, card goes to junk and one life dies. Also, if the laid card is «5» then one hint adds.</p>
+                        <p>    Hint: One hint spends (player can make this move only when there are at least one hint). Player choose another one, then choose what he will hint: color or value, and hints to him where are all cards with that one that property. For example, he can show where are all the red cards in one hand, or all the «2».</p>
+                        <p>    The game ends if there are all the 25 cards in the solitaire, or if there are no alive lives anymore, or if there are no cards in the deck and one circle of moves have been made.</p>
+                        <p>    Result of the game is the amount of cards in the solitaire if there are at least one life stayed alive and otherwise – 0.</p>
                     </div>
 
                     <div class="modal-footer">
