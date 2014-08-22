@@ -1,5 +1,6 @@
 $( document ).ready(function() {
     document.getElementById("alert_modal_content").innerHTML = "";
+    refresh();
 });
 
 function go_to_main() {
@@ -17,8 +18,8 @@ function go_to_main() {
         var game_list = document.getElementById("game_list");
         while (game_list.firstChild)
             game_list.removeChild(game_list.firstChild);
-        refresh();
     }
+    refresh();
 }
 
 function create_game() {
