@@ -499,23 +499,23 @@ def user_disconnect(user_id, game_url):
     game_key = ndb.Key(urlsafe=game_url)
     game = game_key.get()
 
-    if game.started:
+    if (game.started):
         for user in game.user_id_list:
-            if user != user_id:
+            if (user != user_id):
                 channel.send_message(user, "alert?type=error&msg=KABOOM user #" + user_id + " gone!!!")
         game.key.delete()
         return False
 
     j = 0
-    while j < len(game.user_id_list):
-        if game.user_id_list[j] == user_id:
+    while (j < len(game.user_id_list)):
+        if (game.user_id_list[j] == user_id):
             game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
         else:
             j += 1
 
     game.user_count = len(game.user_id_list)
     game.full = (game.user_count == game.max_user_count)
-    if game.user_count == 0:
+    if (game.user_count == 0):
         game.key.delete()
         return False
     else:
@@ -540,9 +540,13 @@ class DisconnectionHandler(webapp2.RequestHandler):
         logging.info("DisconnectionHandler post")
 
         user_id = self.request.get("from")
-        game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
-        if user_disconnect(user_id, game_url):
-            update_online_users(game_url)
+
+        try:
+            game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+            if (user_disconnect(user_id, game_url)):
+                update_online_users(game_url)
+        except:
+            logging.info("DisconnectionHandler post: game already deleted")
 
 
 class LeaveHandler(webapp2.RequestHandler):
@@ -550,10 +554,13 @@ class LeaveHandler(webapp2.RequestHandler):
         logging.info("LeaveHandler post")
 
         user_id = self.request.get("user_id")
-        game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
-        if user_disconnect(user_id, game_url):
-            update_online_users(game_url)
 
+        try:
+            game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+            if (user_disconnect(user_id, game_url)):
+                update_online_users(game_url)
+        except:
+            logging.info("LeaveHandler post: game already deleted")
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),

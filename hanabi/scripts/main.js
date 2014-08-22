@@ -30,15 +30,16 @@ function create_game() {
 function join_room() {
     var cont = document.getElementById("alert_modal_content");
     var pan = document.createElement("div");
-    pan.innerHTML = '<div class="panel-heading">Enter the password</div>' +
+    pan.innerHTML = '<div class="panel-heading"><h4>Enter the password</h4></div>' +
     '<div class="panel-body">' +
     '<input type="text" class="form-control" placeholder="password" id="pass_enter" maxlength="20" size="20" style="width: 150px; maegin-left: auto; margin-right: auto">' +
     '<button type="button" class="btn btn-primary" style="float: right;" id="enter_btn" ' + 'room_name="' + this.getAttribute("room_name") + '">Enter</button>' +
-    '<button type="button" class="btn btn-default" style="float: right;" onclick="calcel_join()">Cancel</button></div>';
+    '<button type="button" class="btn btn-default" style="float: right;" id="cancel_btn">Cancel</button></div>';
     pan.setAttribute("class", "panel panel-primary pass_pan");
     pan.style.marginBottom = "0px";
     cont.appendChild(pan);
     document.getElementById("enter_btn").onclick = validate_pass;
+    document.getElementById("cancel_btn").onclick = cancel_join;
     $("#alertModal").modal("show");
 
 //    var game_password = prompt("Enter password");
