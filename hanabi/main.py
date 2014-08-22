@@ -264,6 +264,9 @@ class GameStartHandler(webapp2.RequestHandler):
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
         #game.user_count = 4
+        if (game.user_count < 2):
+            return
+
         game.game_state = GameState()
 
         game.game_state.deck = []
@@ -328,18 +331,26 @@ class GameListRefreshHandler(webapp2.RequestHandler):
 
 class GameMoveHandler(webapp2.RequestHandler):
     def post(self):
+        logging.info("GameMoveHandler post")
         move_type = self.request.get("type")
         user_id = self.request.get("user_id")
         game_name = self.request.get("game_name")
         user_position = int(self.request.get("user_position"))
-        game = Game.query(Game.name == game_name).fetch(1)[0]
+        
+        games = Game.query(Game.name == game_name).fetch(1)
 
-        if (game.game_state.life_count == 0):
-            channel.send_message(user_id, "alert?type=error&msg=Game Over!")
-            game.key.delete()
+        if (len(games) != 0):
+            game = games[0]
+        else:
+            channel.send_message(user_id, "alert?type=error&msg=Game already over, man...")
             return
+        
+#        if (game.game_state.life_count == 0):
+#            channel.send_message(user_id, "alert?type=error&msg=Game already over, man...")
+#            game.key.delete()
+#            return
 
-        if game.user_id_list.index(user_id) != game.game_state.whose_move:
+        if (game.user_id_list.index(user_id) != game.game_state.whose_move):
             channel.send_message(user_id, "alert?type=error&msg=Not your turn!")
             return
 
@@ -542,11 +553,13 @@ class DisconnectionHandler(webapp2.RequestHandler):
 
         user_id = self.request.get("from")
 
-        try:
-            game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+        games = Game.query(Game.user_id_list == user_id).fetch(1)
+
+        if (len(games) != 0):
+            game_url = games[0].key.urlsafe()
             if (user_disconnect(user_id, game_url)):
                 update_online_users(game_url)
-        except:
+        else:
             logging.info("DisconnectionHandler post: game already deleted")
 
 
@@ -556,11 +569,13 @@ class LeaveHandler(webapp2.RequestHandler):
 
         user_id = self.request.get("user_id")
 
-        try:
-            game_url = Game.query(Game.user_id_list == user_id).fetch(1)[0].key.urlsafe()
+        games = Game.query(Game.user_id_list == user_id).fetch(1)
+
+        if (len):
+            game_url = games[0].key.urlsafe()
             if (user_disconnect(user_id, game_url)):
                 update_online_users(game_url)
-        except:
+        else:
             logging.info("LeaveHandler post: game already deleted")
 
 application = webapp2.WSGIApplication([
