@@ -344,11 +344,6 @@ class GameMoveHandler(webapp2.RequestHandler):
         else:
             channel.send_message(user_id, "alert?type=error&msg=Game already over, man...")
             return
-        
-#        if (game.game_state.life_count == 0):
-#            channel.send_message(user_id, "alert?type=error&msg=Game already over, man...")
-#            game.key.delete()
-#            return
 
         if (game.user_id_list.index(user_id) != game.game_state.whose_move):
             channel.send_message(user_id, "alert?type=error&msg=Not your turn!")
@@ -571,7 +566,7 @@ class LeaveHandler(webapp2.RequestHandler):
 
         games = Game.query(Game.user_id_list == user_id).fetch(1)
 
-        if (len):
+        if (len(games) != 0):
             game_url = games[0].key.urlsafe()
             if (user_disconnect(user_id, game_url)):
                 update_online_users(game_url)
