@@ -1,5 +1,5 @@
 $( document ).ready(function() {
-    document.getElementById("alert_modal_content").innerHTML = "";    
+    document.getElementById("alert_modal_content").innerHTML = "";
 });
 
 function go_to_main() {
@@ -12,6 +12,7 @@ function go_to_main() {
 
         document.getElementById("game_name").value = "";
         document.getElementById("password").value = "";
+        document.getElementById("chat").innerHTML = "";
 
         var game_list = document.getElementById("game_list");
         while (game_list.firstChild)
@@ -29,6 +30,8 @@ function create_game() {
 
 function join_room() {
     var cont = document.getElementById("alert_modal_content");
+    if (cont.innerHTML != "")
+        return
     var pan = document.createElement("div");
     pan.innerHTML = '<div class="panel-heading"><h4>Enter the password</h4></div>' +
     '<div class="panel-body">' +

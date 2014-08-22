@@ -59,8 +59,7 @@
         </div>
 
         <script>
-            $("#alertModal").on("hidden.bs.modal", function() {
-                $(".alert").alert("close");
+            $("#alertModal").on("hide.bs.modal", function() {
                 document.getElementById("alert_modal_content").innerHTML = "";
                 if (queue_to_show.length != 0)
                     show_in_panel(queue_to_show.shift());
@@ -125,18 +124,21 @@
         </div>
 
         <div id="chat_room" style="display: none">
-            <div class="chat" id="chat">
-                <p>CHAT</p>
+            <div class="panel panel-info chat" style="margin-bottom: 0px">
+                <div class="panel-body msg_list" id="chat">
+                
+                </div>
+                <div class="panel-footer">
+                    <div class="message_create">
+                        <textarea id="message" style="resize: none"></textarea>
+                        <button class="btn btn-success chat_btn" onclick="submit()">Submit</button>
+                        <button class="btn btn-danger chat_btn" id="start" onclick="start_game()" style="display: none">Start</button>
+                    </div>
+                </div>
             </div>
 
             <div class="online_list" id="online_list">
 
-            </div>
-
-            <div class="message_create">
-                <textarea id="message" style="resize: none"></textarea>
-                <button class="submit" value="submit" onclick="submit()">Submit</button>
-                <button id="start" value="submit" onclick="start_game()" style="display: none">Start</button>
             </div>
         </div>
 

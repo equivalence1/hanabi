@@ -150,7 +150,6 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.max_user_count = int(max_user_count)
         game.started = False
         game.full = False
-        logging.info(len(game.password) != 0)
         game.locked = (len(game.password) != 0)
         game.put()
 
@@ -510,12 +509,14 @@ def user_disconnect(user_id, game_url):
     while (j < len(game.user_id_list)):
         if (game.user_id_list[j] == user_id):
             game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
+            break
         else:
             j += 1
 
     game.user_count = len(game.user_id_list)
     game.full = (game.user_count == game.max_user_count)
     if (game.user_count == 0):
+        logging.info("game '" + game.name + "' deleted")
         game.key.delete()
         return False
     else:
