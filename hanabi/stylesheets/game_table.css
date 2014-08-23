@@ -25,7 +25,7 @@
     top: 100px;
     left: 100px;
     display: inline;
-    background-color: orangered;
+    background-color: rgb(231, 191, 165);
     width: 600px;
     height: 300px;
 }
@@ -35,9 +35,11 @@
     display: inline;
     width: 450px;
     height: 150px;
-    background-color: #CD5555;
+    background-color: /*rgb(189, 119, 98)*/rgb(231, 191, 165);
     left: 0px;
     top: 0px;
+    border-bottom: 1px solid rgb(224, 174, 141);
+    border-right: 1px solid rgb(224, 174, 141);
 }
 
 #junk {
@@ -47,6 +49,7 @@
     height: 150px;
     left: 0px;
     top: 150px;
+    border-right: 1px solid rgb(224, 174, 141);
 }
 
 #chips {
@@ -56,6 +59,7 @@
     height: 300px;
     left: 450px;
     top: 0px;
+	background-color: rgb(231, 191, 165);
 }
 
 #right_hand {
@@ -138,6 +142,7 @@
     height: 550px;
     width: 800px;
     clear: both;
+    margin-top: -20px;
 }
 
 .info_message {
@@ -155,9 +160,7 @@
     position: absolute;
     width: 50px;
     height: 50px;
-/*    float: right;*/
     display: inline-block;
-    border-radius: 25px;
 }
 
 .card_over {
