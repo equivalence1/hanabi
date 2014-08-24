@@ -247,12 +247,13 @@ class SendChatMessage(webapp2.RequestHandler):
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
-        for user_id in game.user_id_list:
-            channel.send_message(
-                user_id,
-                "new_message?from_id=" + from_id +
-                "&message=" + message
-            )
+        if (message.strip() != ""):
+            for user_id in game.user_id_list:
+                channel.send_message(
+                    user_id,
+                    "new_message?from_id=" + from_id +
+                    "&message=" + message
+                )
 
 
 class GameStartHandler(webapp2.RequestHandler):
