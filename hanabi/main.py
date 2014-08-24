@@ -438,10 +438,10 @@ class GameMoveHandler(webapp2.RequestHandler):
                     x += 1
 
             if (x == 5):
-                num = 0
                 for user in game.user_id_list:
                     channel.send_message(user, "alert?type=over&msg=Game Over!")
-                    num += 1
+                game.key.delete()
+                return
 
         if (move_type == "hint"):
             logging.info("hint")
