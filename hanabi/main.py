@@ -432,6 +432,16 @@ class GameMoveHandler(webapp2.RequestHandler):
                 channel.send_message(user, game_state_msg_for_user(game, num))
                 num += 1
 
+            x = 0
+            for some_card in game.game_state.solitaire:
+                if (some_card.value == 5):
+                    x += 1
+
+            if (x == 5):
+                num = 0
+                for user in game.user_id_list:
+                    channel.send_message(user, "alert?type=over&msg=Game Over!")
+                    num += 1
 
         if (move_type == "hint"):
             logging.info("hint")
