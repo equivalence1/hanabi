@@ -294,9 +294,9 @@ function display_hint() {
             arrow.innerHTML += "<br>";
 
             arrow.innerHTML += "↓";
-            arrow.start_top = -50;
+            arrow.start_top = -70;
             arrow.start_left = 32 + parseInt(hint.card_ids[i]) * 67;
-            arrow.style.top = "-50px";
+            arrow.style.top = "-70px";
             arrow.style.left = (32 + parseInt(hint.card_ids[i]) * 67) + "px";
             arrow.left_animated = false;
             arrow.top_animated = true;
@@ -304,9 +304,9 @@ function display_hint() {
 
         if (place[hint.to_player] == "upper_hand") {
             arrow.innerHTML = "↑";
-            arrow.start_top = 50;
+            arrow.start_top = 80;
             arrow.start_left = 32 + parseInt(hint.card_ids[i]) * 67;
-            arrow.style.top = "50px";
+            arrow.style.top = "80px";
             arrow.style.left = (32 + parseInt(hint.card_ids[i]) * 67) + "px";
             arrow.left_animated = false;
             arrow.top_animated = true;
@@ -325,9 +325,9 @@ function display_hint() {
             else
                 arrow.innerHTML += hint.hinted_value;
 
-            arrow.start_left = 50;
+            arrow.start_left = 70;
             arrow.start_top = 50 + parseInt(hint.card_ids[i]) * 99;
-            arrow.style.left = "50px";
+            arrow.style.left = "70px";
             arrow.style.top = (50 + parseInt(hint.card_ids[i]) * 99) + "px";
             arrow.left_animated = true;
             arrow.top_animated = false;
@@ -339,7 +339,7 @@ function display_hint() {
             else
                 arrow.innerHTML = hint.hinted_value;
             arrow.innerHTML += "→";
-            arrow.start_left = -50;
+            arrow.start_left = -70;
             arrow.start_top = 50 + parseInt(hint.card_ids[i]) * 99;
             arrow.style.left = arrow.start_left + "px";
             arrow.style.top = (50 + parseInt(hint.card_ids[i]) * 99) + "px";

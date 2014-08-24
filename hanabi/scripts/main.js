@@ -42,6 +42,10 @@ function join_room() {
     var cont = document.getElementById("alert_modal_content");
     if (cont.innerHTML != "")
         return
+    if (this.getAttribute("locked") === "False") {
+        sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + "&game_name=" + this.getAttribute("room_name"));
+        return;
+    }
     var pan = document.createElement("div");
     pan.innerHTML = '<div class="panel-heading"><h4>Enter the password</h4></div>' +
     '<div class="panel-body">' +
@@ -137,6 +141,7 @@ function add_to_list(name, fill, locked) {
     join_button.setAttribute("class", "btn btn-info btn-xs join_button");
     join_button.innerHTML = "join";
     join_button.setAttribute("room_name", name);
+    join_button.setAttribute("locked", locked.toString());
     join_button.onclick = join_room;
 
     new_game.appendChild(game_name);
