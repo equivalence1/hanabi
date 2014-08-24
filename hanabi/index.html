@@ -120,7 +120,7 @@
                 </div>
                 <div class="panel-footer">
                     <div class="message_create">
-                        <textarea onkeydown="javascript:if(event.keyCode==13||event.keyCode==10){submit()}" id="message" style="resize: none"></textarea>
+                        <textarea onkeyup="javascript:if(event.keyCode==13||event.keyCode==10){submit();}" id="message" style="resize: none"></textarea>
                         <button class="btn btn-success chat_btn" onclick="submit()">Submit</button>
                         <button class="btn btn-danger chat_btn" id="start" onclick="start_game()" style="display: none">Start</button>
                     </div>
