@@ -210,6 +210,7 @@ function show_in_panel(div_to_show) {
     if (cont.innerHTML == "") {
         cont.appendChild(div_to_show);
         $("#alertModal").modal("show");
+        document.getElementById("alertModal").focus();
     } else {
         queue_to_show.push(div_to_show);
     }

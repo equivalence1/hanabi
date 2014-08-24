@@ -3,6 +3,10 @@ body {
     width: 800px !important;
 }
 
+#RulesModal p {
+	font-size: 16px;
+}
+
 .room_list {
     float: left;
     display: inline-block;

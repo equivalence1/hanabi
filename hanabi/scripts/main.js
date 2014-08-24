@@ -1,11 +1,15 @@
 $( document ).ready(function() {
     document.getElementById("alert_modal_content").innerHTML = "";
     refresh();
-            $("#alertModal").on("hidden.bs.modal", function() {
-                document.getElementById("alert_modal_content").innerHTML = "";
-                if (queue_to_show.length != 0)
-                    show_in_panel(queue_to_show.shift());
-            });
+    $("#alertModal").on("hidden.bs.modal", function() {
+        document.getElementById("alert_modal_content").innerHTML = "";
+        if (queue_to_show.length != 0)
+            show_in_panel(queue_to_show.shift());
+    });
+    $("#alertModal").on("shown.bs.modal", function() {
+        if ($("#pass_enter") != undefined)
+            $("#pass_enter").focus();
+    });            
 });
 
 function go_to_main() {
@@ -41,7 +45,7 @@ function join_room() {
     var pan = document.createElement("div");
     pan.innerHTML = '<div class="panel-heading"><h4>Enter the password</h4></div>' +
     '<div class="panel-body">' +
-    '<input type="text" class="form-control" placeholder="password" id="pass_enter" maxlength="20" size="20" style="width: 150px; maegin-left: auto; margin-right: auto">' +
+    '<input type="text" class="form-control" placeholder="password" id="pass_enter" maxlength="20" size="20" style="width: 150px;">' +
     '<button type="button" class="btn btn-primary" style="float: right;" id="enter_btn" ' + 'room_name="' + this.getAttribute("room_name") + '">Enter</button>' +
     '<button type="button" class="btn btn-default" style="float: right;" id="cancel_btn">Cancel</button></div>';
     pan.setAttribute("class", "panel panel-primary pass_pan");
@@ -49,10 +53,9 @@ function join_room() {
     cont.appendChild(pan);
     document.getElementById("enter_btn").onclick = validate_pass;
     document.getElementById("cancel_btn").onclick = cancel_join;
+    document.getElementById("pass_enter").setAttribute("onkeydown", "javascript:if(event.keyCode==13||event.keyCode==10)\
+    {document.getElementById('enter_btn').click();}");
     $("#alertModal").modal("show");
-
-//    var game_password = prompt("Enter password");
-//    sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
 }
 
 function validate_pass() {
@@ -72,6 +75,7 @@ function start_game() {
 function submit() {
     sendMessage("/send_chat_message", "user_id=" + user_id + "&game_name=" + game_name + "&message=" + document.getElementById("message").value);
     document.getElementById("message").value = "";
+    document.getElementById("message").focus();
 }
 
 function hide_all() {
@@ -87,6 +91,7 @@ function display_main_content() {
 
 function display_chat_room() {
     document.getElementById("chat_room").style.display = "";
+    document.getElementById("message").focus();
 }
 
 function display_start_game_button() {
@@ -113,6 +118,9 @@ function add_message(from_id, msg) {
 
     var chat = document.getElementById("chat");
     chat.appendChild(new_message);
+
+    var a = document.getElementsByClassName("message_div");
+    a[a.length - 1].scrollIntoView();
 }
 
 function add_to_list(name, fill, locked) {

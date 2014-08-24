@@ -78,6 +78,7 @@
     line-height: 150%;
     height: auto;
     word-break: break-all;
+    padding-left: 5px;
 }
 
 .msg_user {
