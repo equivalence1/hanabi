@@ -88,7 +88,7 @@
     height: 94px;
     width: 64px;
     display: inline-block;
-    font-family: Moonlight;
+    font-family: cursive;
     font-size: 36pt;
     margin-right: 3px;
 }
@@ -98,7 +98,7 @@
     height: 94px;
     width: 64px;
     display: inline-block;
-    font-family: Moonlight;
+    font-family: cursive;
     font-size: 16pt;
     margin: 3px;
 }
@@ -108,7 +108,7 @@
     height: 36px;
     width: 25px;
     display: inline-block;
-    font-family: Moonlight;
+    font-family: cursive;
     font-size: 36pt;
     margin: 2px;
 }
@@ -182,7 +182,7 @@
     height: 94px;
     width: 64px;
     display: inline-block;
-    font-family: Moonlight;
+    font-family: cursive;
     font-size: 36pt;
     background-color: darkblue;
     border: 2px solid black;
@@ -195,7 +195,7 @@
     height: 36px;
     width: 25px;
     display: inline-block;
-    font-family: Moonlight;
+    font-family: cursive;
     font-size: 14pt;
     background-color: darkblue;
     border: 1px solid black;

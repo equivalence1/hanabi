@@ -31,9 +31,11 @@ function update_game_table() {
     var div = document.getElementById(place[game_state.whose_move]);
     div.style.backgroundColor = "rgb(223, 240, 216)";
 
+    for (i = 0; i < 4; i++)
+        document.getElementById(["left_hand", "upper_hand", "right_hand", "down_hand"][i]).innerHTML = "";
+
     for (i = 0; i < game_state.users_count; i++) {
         var hand = document.getElementById(place[i]);
-        hand.innerHTML = "";
         for (var j = 0; j < card_amount_in_hand_by_user_count[game_state.users_count]; j++)
             add_card_to_hand(hand, game_state.hand[i][j], i, j);
     }
