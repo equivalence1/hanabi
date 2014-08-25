@@ -41,8 +41,8 @@
                         <p>    Junk: that card goes to junk and it can't be played anymore. If deck not empty yet, then player takes new card. Also, if there are less then 8 hints, it increases by one.</p>
                         <p>    Solitaire: card goes to solitaire only if there are already card of the same color and previous value (or empty for «1»). Otherwise, card goes to junk and one life dies. You have only 3 lifes. Also, if the laid card is «5» then one hint adds.</p>
                         <p>    Hint: There are two types of hint: color hint and value hint. Each your move (if where are left at least one hint chip) you can choose to whom and what you want to hint (value or color) and after you've choosen you hint to your partner where are placed all the cards with this same property. For example, he can show where are all the red cards in one hand, or all the «2». After each hint one hint chip burns.</p>
-                        <p>    The game ends if there are all the 25 cards in the solitaire, or if there are no alive lives anymore, or if there are no cards in the deck and one circle of moves have been made.</p>
-                        <p>    Result of the game is the amount of cards in the solitaire if there are at least one life stayed alive and otherwise – 0.</p>
+                        <p>    The game ends if there are all the 25 cards in the solitaire, or if there are no alive lives anymore, or if there are no cards in the deck and one circle of moves has been made.</p>
+                        <p>    Result of the game is the amount of cards in the solitaire<!-- if there are at least one life stayed alive and otherwise – 0.--></p>
                     </div>
 
                     <div class="modal-footer">
@@ -70,10 +70,22 @@
                     </button>
                     <a class="navbar-brand" href="#" onclick="go_to_main();">Hanabi</a>
                 </div>
-
-                <ul class="nav navbar-nav navbar-right">
-                    <li><a href="#" data-toggle="modal" data-target="#RulesModal">Rules</a></li>
-                </ul>
+                <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-right">
+                        <li>
+                            <a style="font-size: 16px" title="You can't change your nick during the game">Your current nick: <span id="nick"></span></a>
+                        </li>
+                        <li>
+                            <form class="navbar-form navbar-left" role="form">
+                                <div class="form-group">
+                                    <input type="text" class="form-control" placeholder="new nick" maxlength="20" id="new_nick">
+                                </div>
+                                <button type="submit" class="btn btn-success" onclick="set_nick()">Set</button>
+                            </form>
+                        </li>
+                        <li><a href="#" data-toggle="modal" data-target="#RulesModal">Rules</a></li>
+                    </ul>
+                </div>
             </div>
         </div>
 

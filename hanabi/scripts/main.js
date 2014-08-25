@@ -9,7 +9,9 @@ $( document ).ready(function() {
     $("#alertModal").on("shown.bs.modal", function() {
         if ($("#pass_enter") != undefined)
             $("#pass_enter").focus();
-    });            
+    });
+    nick = user_id;
+    document.getElementById("nick").innerHTML = user_id;
 });
 
 function go_to_main() {
@@ -35,7 +37,7 @@ function create_game() {
     game_name = document.getElementById("game_name").value.toString();
     var game_password = document.getElementById("password").value.toString();
 
-    sendMessage("/game_create", "game_name=" + game_name + "&password=" + game_password + "&user_id=" + user_id + "&max_user_count=4");
+    sendMessage("/game_create", "game_name=" + game_name + "&nick=" + nick + "&password=" + game_password + "&user_id=" + user_id + "&max_user_count=4");
 }
 
 function join_room() {
@@ -65,7 +67,7 @@ function join_room() {
 function validate_pass() {
     var game_password = document.getElementById("pass_enter").value;
     $("#alertModal").modal("hide");
-    sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
+    sendMessage("/join_game", "user_id=" + user_id + "&nick=" + nick + "&game_password=" + game_password + "&game_name=" + this.getAttribute("room_name"));
 }
 
 function cancel_join() {
@@ -168,4 +170,13 @@ function update_online_list(count, user_str) {
 
 function refresh() {
     sendMessage("/game_list_refresh", "user_id=" + user_id);
+}
+
+function set_nick() {
+    var new_nick = document.getElementById("new_nick").value;
+    document.getElementById("new_nick").value = "";
+    if ($.trim(new_nick) != "") {
+        nick = new_nick;
+        document.getElementById("nick").innerHTML = nick;
+    }
 }
