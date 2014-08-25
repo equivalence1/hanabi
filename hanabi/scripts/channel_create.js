@@ -202,7 +202,6 @@ function onMessage(msg) {
 
         show_in_panel(user_alert);
     }
-        
 }
 
 function show_in_panel(div_to_show) {

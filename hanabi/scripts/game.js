@@ -284,11 +284,11 @@ function display_hint() {
         if (hint.hinted_color != undefined)
             arrow.style.color = hint.hinted_color;
         else
-            arrow.style.color = "lightgray";
+            arrow.style.color = "#999999";
 
         if (place[hint.to_player] == "down_hand") {
             if (hint.hinted_color != undefined)
-                arrow.innerHTML = hint.hinted_color;
+                arrow.innerHTML = "█";
             else
                 arrow.innerHTML = hint.hinted_value;
             arrow.innerHTML += "<br>";
@@ -313,7 +313,7 @@ function display_hint() {
 
             arrow.innerHTML += "<br>";
                 if (hint.hinted_color != undefined)
-            arrow.innerHTML += hint.hinted_color;
+            arrow.innerHTML += "█";
             else
                 arrow.innerHTML += hint.hinted_value;
         }
@@ -321,7 +321,7 @@ function display_hint() {
         if (place[hint.to_player] == "left_hand") {
             arrow.innerHTML = "←";
             if (hint.hinted_color != undefined)
-                arrow.innerHTML += hint.hinted_color;
+                arrow.innerHTML += "█";
             else
                 arrow.innerHTML += hint.hinted_value;
 
@@ -335,7 +335,7 @@ function display_hint() {
 
         if (place[hint.to_player] == "right_hand") {
             if (hint.hinted_color != undefined)
-                arrow.innerHTML = hint.hinted_color;
+                arrow.innerHTML = "█";
             else
                 arrow.innerHTML = hint.hinted_value;
             arrow.innerHTML += "→";
@@ -347,7 +347,8 @@ function display_hint() {
             arrow.top_animated = false;
         }
 
-
+        if (hint.hinted_color == undefined)
+            arrow.innerHTML = "<strong>" + arrow.innerHTML + "</strong>";
 
         var hand = document.getElementById(place[hint.to_player]);
         hand.appendChild(arrow);

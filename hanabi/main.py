@@ -20,7 +20,6 @@ import logging
 import random
 
 from google.appengine.api import channel
-from google.appengine.api import users
 from google.appengine.ext import ndb
 
 import jinja2
@@ -112,7 +111,7 @@ class MainPage(webapp2.RequestHandler):
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
-        token = channel.create_channel(user_id, duration_minutes=2*60)
+        token = channel.create_channel(user_id, duration_minutes=10*60)
         template_values = {
             "token": token,
             "t": user_id,
@@ -472,7 +471,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                         "hint?from_player=" + str(game.game_state.whose_move) +\
                         "&to_player=" + str(user_position) +\
                         "&type=color" +\
-                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&card_ids=" + "".join(map(str, card_ids)) +\
                         "&hinted_color=" + color_by_number[color]
                     )
                 else:
@@ -481,7 +480,7 @@ class GameMoveHandler(webapp2.RequestHandler):
                         "hint?from_player=" + str(game.game_state.whose_move) +\
                         "&to_player=" + str(user_position) +\
                         "&type=value" +\
-                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&card_ids=" + "".join(map(str, card_ids)) +\
                         "&hinted_value=" + str(value)
                     )
 
@@ -583,6 +582,7 @@ class LeaveHandler(webapp2.RequestHandler):
                 update_online_users(game_url)
         else:
             logging.info("LeaveHandler post: game already deleted")
+
 
 application = webapp2.WSGIApplication([
     ("/", MainPage),
