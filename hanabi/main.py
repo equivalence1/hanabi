@@ -248,6 +248,7 @@ class SendChatMessage(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
         from_id = self.request.get("user_id")
         message = self.request.get("message")
+        nick = self.request.get("nick")
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
@@ -255,7 +256,7 @@ class SendChatMessage(webapp2.RequestHandler):
             for user_id in game.user_id_list:
                 channel.send_message(
                     user_id,
-                    "new_message?from_id=" + from_id +
+                    "new_message?from_id=" + nick +
                     "&message=" + message
                 )
 
