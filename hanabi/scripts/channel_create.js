@@ -71,6 +71,18 @@ function onMessage(msg) {
         update_online_list(users_count, users_str);
     }
 
+    if (deserialize(msg.data, "last_move") == "hint") {
+        hint = {};
+        hint.from_player = deserialize(msg.data, "from_player");
+        hint.to_player = deserialize(msg.data, "to_player");
+        hint.hint_type = deserialize(msg.data, "type");
+        hint.card_ids = deserialize(msg.data, "card_ids");
+        if (hint.hint_type == "color")
+            hint.hinted_color = deserialize(msg.data, "hinted_color");
+        else
+            hint.hinted_value = deserialize(msg.data, "hinted_value");
+    }
+
     if (msg.data.indexOf("start_game") == 0) {
         hide_all();
 
@@ -119,18 +131,6 @@ function onMessage(msg) {
 
         display_game_table();
         update_game_table();
-    }
-
-    if (msg.data.indexOf("hint") == 0) {
-        hint = {};
-        hint.from_player = deserialize(msg.data, "from_player");
-        hint.to_player = deserialize(msg.data, "to_player");
-        hint.hint_type = deserialize(msg.data, "type");
-        hint.card_ids = deserialize(msg.data, "card_ids");
-        if (hint.hint_type == "color")
-            hint.hinted_color = deserialize(msg.data, "hinted_color");
-        else
-            hint.hinted_value = deserialize(msg.data, "hinted_value");
     }
 
     if (msg.data.indexOf("add_game_to_list") == 0) {

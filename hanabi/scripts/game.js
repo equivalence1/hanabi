@@ -98,8 +98,8 @@ function update_game_table() {
             sp.setAttribute("class", "green_card");
         nick_list.appendChild(sp);
     }
-    players_order_div.appendChild(nick_list);
 
+    players_order_div.appendChild(nick_list);
 }
 
 function add_chips(table_chips) {
@@ -293,6 +293,7 @@ function start_animation(arrow) {
 }
 
 function display_hint() {
+
     for (var i = 0; i < hint.card_ids.length; i++) {
         var arrow = document.createElement("div");
         arrow.setAttribute("class", "arrow");
@@ -363,8 +364,6 @@ function display_hint() {
             arrow.left_animated = true;
             arrow.top_animated = false;
         }
-
-
 
         var hand = document.getElementById(place[hint.to_player]);
         hand.appendChild(arrow);

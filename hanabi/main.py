@@ -470,26 +470,6 @@ class GameMoveHandler(webapp2.RequestHandler):
                     card_ids.append(num)
                 num += 1
 
-            for user in game.user_id_list:
-                if (color != -1):
-                    channel.send_message(
-                        user,
-                        "hint?from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=color" +\
-                        "&card_ids=" + "".join(map(str, card_ids))  +\
-                        "&hinted_color=" + color_by_number[color]
-                    )
-                else:
-                    channel.send_message(
-                        user,
-                        "hint?from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=value" +\
-                        "&card_ids=" + "".join(map(str, card_ids))  +\
-                        "&hinted_value=" + str(value)
-                    )
-
             if (len(game.game_state.deck) == 0):
                 game.game_state.moves_after_empty_deck += 1
 
@@ -498,7 +478,26 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             num = 0
             for user in game.user_id_list:
-                channel.send_message(user, game_state_msg_for_user(game, num))
+                if (color != -1):
+                    channel.send_message(
+                        user,
+                        game_state_msg_for_user(game, num) +\
+                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=color" +\
+                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&hinted_color=" + color_by_number[color]
+                    )
+                else:
+                    channel.send_message(
+                        user,
+                        game_state_msg_for_user(game, num) +\
+                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=value" +\
+                        "&card_ids=" + "".join(map(str, card_ids))  +\
+                        "&hinted_value=" + str(value)
+                    )
                 num += 1
 
         if (game.user_count == game.game_state.moves_after_empty_deck):
