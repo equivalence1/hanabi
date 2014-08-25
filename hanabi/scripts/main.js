@@ -79,7 +79,7 @@ function start_game() {
 }
 
 function submit() {
-    sendMessage("/send_chat_message", "user_id=" + user_id + "&game_name=" + game_name + "&message=" + document.getElementById("message").value);
+    sendMessage("/send_chat_message", "user_id=" + user_id + "&nick=" + nick + "&game_name=" + game_name + "&message=" + document.getElementById("message").value);
     document.getElementById("message").value = "";
     document.getElementById("message").focus();
 }
