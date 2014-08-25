@@ -89,28 +89,33 @@ function hide_all() {
     document.getElementById("chat_room").style.display = "none";
     document.getElementById("start").style.display = "none";
     document.getElementById("game_table").style.display = "none";
-    document.getElementById("new_nick_form").style.display = "none";
+    document.getElementById("new_nick").style.display = "none";
+    document.getElementById("set_new_nick").style.display = "none";
 }
 
 function display_main_content() {
     document.getElementById("main_content").style.display = "";
-    document.getElementById("new_nick_form").style.display = "";
+    document.getElementById("new_nick").style.display = "";
+    document.getElementById("set_new_nick").style.display = "";
 }
 
 function display_chat_room() {
     document.getElementById("chat_room").style.display = "";
-    document.getElementById("new_nick_form").style.display = "none";
+    document.getElementById("new_nick").style.display = "none";
+    document.getElementById("set_new_nick").style.display = "none";
     document.getElementById("message").focus();
 }
 
 function display_start_game_button() {
     document.getElementById("start").style.display = "";
-    document.getElementById("new_nick_form").style.display = "none";
+    document.getElementById("new_nick").style.display = "none";
+    document.getElementById("set_new_nick").style.display = "none";
 }
 
 function display_game_table() {
     document.getElementById("game_table").style.display = "";
-    document.getElementById("new_nick_form").style.display = "none";
+    document.getElementById("new_nick").style.display = "none";
+    document.getElementById("set_new_nick").style.display = "none";
 }
 
 function add_message(from_id, msg) {
