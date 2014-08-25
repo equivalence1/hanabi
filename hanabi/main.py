@@ -49,8 +49,8 @@ def game_state_msg_for_user(game, num):
     msg += "&deck_size=" + str(len(game.game_state.deck))
 
     for user_num in range(game.user_count):
+        msg += "&user" + str(user_num) + "nick=" + game.user_nick_list[user_num]
         if (num != user_num):
-            msg += "&user" + str(user_num) + "id=" + game.user_id_list[num]
             msg += "&user" + str(user_num) + "cards="
             for card in game.game_state.user_hands[user_num].cards:
                 msg += str(card.color) + str(card.value)
@@ -93,6 +93,7 @@ class Game(ndb.Model):
     password = ndb.StringProperty()
     date = ndb.DateTimeProperty(auto_now_add=True)
     user_id_list = ndb.StringProperty(repeated=True)
+    user_nick_list = ndb.StringProperty(repeated=True)
     started = ndb.BooleanProperty(indexed=True, default=False)
     full = ndb.BooleanProperty(indexed=True)
     user_count = ndb.IntegerProperty(indexed=True, default=0)
@@ -129,6 +130,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         game_name = self.request.get("game_name")
         password = self.request.get("password")
         user_id = self.request.get("user_id")
+        nick = self.request.get("nick")
         max_user_count = self.request.get("max_user_count")
 
         games = Game.query(Game.name == game_name).fetch()
@@ -145,6 +147,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         game.name = game_name
         game.password = password
         game.user_id_list.append(user_id)
+        game.user_nick_list.append(nick)
         game.user_count = 1
         game.max_user_count = int(max_user_count)
         game.started = False
@@ -155,12 +158,12 @@ class GameCreateHandler(webapp2.RequestHandler):
         channel.send_message(
             user_id,
             "created?&users_count=" + str(game.user_count) +
-            "&users_list=" + user_id
+            "&users_list=" + nick
         )
 
 
 @ndb.transactional(retries=4)
-def add_user_to_game(game_url, game_name, user_id, entered_password):
+def add_user_to_game(game_url, game_name, user_id, nick, entered_password):
     game = ndb.Key(urlsafe=game_url).get()
 
     if entered_password != game.password:
@@ -185,6 +188,7 @@ def add_user_to_game(game_url, game_name, user_id, entered_password):
         return False
 
     game.user_id_list.append(user_id)
+    game.user_nick_list.append(nick)
     game.user_count += 1
     if (game.user_count >= game.max_user_count):
         game.full = True
@@ -200,6 +204,7 @@ class JoinGame(webapp2.RequestHandler):
         user_id = self.request.get("user_id")
         game_name = self.request.get("game_name")
         entered_password = self.request.get("game_password")
+        nick = self.request.get("nick")
 
         games = Game.query(Game.name == game_name).fetch(1)
         if len(games) != 1:
@@ -208,7 +213,7 @@ class JoinGame(webapp2.RequestHandler):
             return
 
         game_url = games[0].key.urlsafe()
-        if not add_user_to_game(game_url, game_name, user_id, entered_password):
+        if not add_user_to_game(game_url, game_name, user_id, nick, entered_password):
             return
         else:
             game = Game.query(Game.name == game_name).fetch(1)[0]
@@ -219,7 +224,7 @@ class JoinGame(webapp2.RequestHandler):
             logging.info("Now in game are: " + ', '.join(game.user_id_list))
 
             users_str =\
-                "&users_list=" + "<br>".join([user for user in game.user_id_list])
+                "&users_list=" + "<br>".join([user for user in game.user_nick_list])
             channel.send_message(
                 user_id,
                 "joined?&game_name=" + game_name +
@@ -464,26 +469,6 @@ class GameMoveHandler(webapp2.RequestHandler):
                     card_ids.append(num)
                 num += 1
 
-            for user in game.user_id_list:
-                if (color != -1):
-                    channel.send_message(
-                        user,
-                        "hint?from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=color" +\
-                        "&card_ids=" + "".join(map(str, card_ids)) +\
-                        "&hinted_color=" + color_by_number[color]
-                    )
-                else:
-                    channel.send_message(
-                        user,
-                        "hint?from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=value" +\
-                        "&card_ids=" + "".join(map(str, card_ids)) +\
-                        "&hinted_value=" + str(value)
-                    )
-
             if (len(game.game_state.deck) == 0):
                 game.game_state.moves_after_empty_deck += 1
 
@@ -492,7 +477,26 @@ class GameMoveHandler(webapp2.RequestHandler):
 
             num = 0
             for user in game.user_id_list:
-                channel.send_message(user, game_state_msg_for_user(game, num))
+                if (color != -1):
+                    channel.send_message(
+                        user,
+                        game_state_msg_for_user(game, num) +\
+                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=color" +\
+                        "&card_ids=" + "".join(map(str, card_ids)) +\
+                        "&hinted_color=" + color_by_number[color]
+                    )
+                else:
+                    channel.send_message(
+                        user,
+                        game_state_msg_for_user(game, num) +\
+                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                        "&to_player=" + str(user_position) +\
+                        "&type=value" +\
+                        "&card_ids=" + "".join(map(str, card_ids)) +\
+                        "&hinted_value=" + str(value)
+                    )
                 num += 1
 
         if (game.user_count == game.game_state.moves_after_empty_deck):
