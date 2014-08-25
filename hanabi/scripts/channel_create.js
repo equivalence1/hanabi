@@ -82,6 +82,8 @@ function onMessage(msg) {
         game_state.deck_size = deserialize(msg.data, "deck_size");
 
         game_state.hand = [];
+        game_state.user_nick_list = [];
+
         for (i = 0; i < game_state.users_count; i++) {
             game_state.hand[i] = [];
             if (game_state.my_position != i) {
@@ -92,7 +94,10 @@ function onMessage(msg) {
                     game_state.hand[i][j].value = parseInt(cards_str[j * 2 + 1]);
                 }
             }
+            game_state.user_nick_list[i] = deserialize(msg.data, "user" + i + "nick");
         }
+
+        game_state.user_nick_list[game_state.my_position] = nick;
 
         game_state.solitaire = [];
         game_state.score = 0;

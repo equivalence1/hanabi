@@ -83,6 +83,23 @@ function update_game_table() {
         display_hint();
         hint = undefined;
     }
+
+    var players_order_div = document.getElementById("players_order");
+    players_order_div.innerHTML = "";
+    var nick_list = document.createElement("p");
+    for (i = 0; i < game_state.users_count; i++) {
+        if (i != game_state.users_count - 1)
+            var s = game_state.user_nick_list[(game_state.my_position + i) % game_state.users_count] + " → ";
+        else
+            var s = game_state.user_nick_list[(game_state.my_position + i) % game_state.users_count];
+        var sp = document.createElement("span");
+        sp.innerHTML = s;
+        if ((game_state.my_position + i) % game_state.users_count == game_state.whose_move)
+            sp.setAttribute("class", "green_card");
+        nick_list.appendChild(sp);
+    }
+    players_order_div.appendChild(nick_list);
+
 }
 
 function add_chips(table_chips) {

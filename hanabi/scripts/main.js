@@ -45,7 +45,7 @@ function join_room() {
     if (cont.innerHTML != "")
         return
     if (this.getAttribute("locked") === "False") {
-        sendMessage("/join_game", "user_id=" + user_id + "&game_password=" + "&game_name=" + this.getAttribute("room_name"));
+        sendMessage("/join_game", "user_id=" + user_id + "&nick=" + nick + "&game_password=" + "&game_name=" + this.getAttribute("room_name"));
         return;
     }
     var pan = document.createElement("div");

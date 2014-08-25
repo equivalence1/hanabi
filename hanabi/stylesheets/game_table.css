@@ -59,7 +59,7 @@
     height: 300px;
     left: 450px;
     top: 0px;
-	background-color: rgb(231, 191, 165);
+    background-color: rgb(231, 191, 165);
 }
 
 #right_hand {
@@ -251,4 +251,14 @@
     display: inline;
     width: 375px !important;
     height: 150px;
+}
+
+#players_order {
+    position: absolute;
+    top: 502px;
+    height: 22px;
+    border: 1px solid rgb(221, 221, 221);
+    background-color: rgb(247, 247, 249);
+    display: block;
+    width: 800px;
 }

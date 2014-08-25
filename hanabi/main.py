@@ -50,8 +50,8 @@ def game_state_msg_for_user(game, num):
     msg += "&deck_size=" + str(len(game.game_state.deck))
 
     for user_num in range(game.user_count):
+        msg += "&user" + str(user_num) + "nick=" + game.user_nick_list[user_num]
         if (num != user_num):
-            msg += "&user" + str(user_num) + "id=" + game.user_id_list[num]
             msg += "&user" + str(user_num) + "cards="
             for card in game.game_state.user_hands[user_num].cards:
                 msg += str(card.color) + str(card.value)
