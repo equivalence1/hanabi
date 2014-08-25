@@ -89,23 +89,28 @@ function hide_all() {
     document.getElementById("chat_room").style.display = "none";
     document.getElementById("start").style.display = "none";
     document.getElementById("game_table").style.display = "none";
+    document.getElementById("new_nick_form").style.display = "none";
 }
 
 function display_main_content() {
     document.getElementById("main_content").style.display = "";
+    document.getElementById("new_nick_form").style.display = "";
 }
 
 function display_chat_room() {
     document.getElementById("chat_room").style.display = "";
+    document.getElementById("new_nick_form").style.display = "none";
     document.getElementById("message").focus();
 }
 
 function display_start_game_button() {
     document.getElementById("start").style.display = "";
+    document.getElementById("new_nick_form").style.display = "none";
 }
 
 function display_game_table() {
     document.getElementById("game_table").style.display = "";
+    document.getElementById("new_nick_form").style.display = "none";
 }
 
 function add_message(from_id, msg) {
@@ -175,6 +180,10 @@ function refresh() {
 function set_nick() {
     var new_nick = document.getElementById("new_nick").value;
     document.getElementById("new_nick").value = "";
+    if (document.getElementById("main_content").style.display != "") {
+        document.getElementById("nick").innerHTML = "You think u r so smart!?!?";
+        return;        
+    }
     if ($.trim(new_nick) != "") {
         nick = new_nick;
         document.getElementById("nick").innerHTML = nick;
