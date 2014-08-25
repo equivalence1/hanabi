@@ -529,6 +529,7 @@ def user_disconnect(user_id, game_url):
     while (j < len(game.user_id_list)):
         if (game.user_id_list[j] == user_id):
             game.user_id_list = game.user_id_list[:j] + game.user_id_list[j + 1:]
+            game.user_nick_list = game.user_nick_list[:j] + game.user_nick_list[j + 1:]
             break
         else:
             j += 1
