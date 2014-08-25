@@ -183,9 +183,12 @@ function onMessage(msg) {
     }
 
     if (deserialize(msg.data, "type") == "over") {
-        if (game_state.score != 25)
-            user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.score;
-        else
+        if (game_state.score != 25) {
+            if (game_state.life == "0")
+                user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + 0 + ". You lost all your lifes :(";
+            else
+                user_alert.innerHTML = "<strong>Game over!</strong> Your score: " + game_state.score;
+        } else
             user_alert.innerHTML = "<strong>Congratulations! You won the game!</strong>";
         user_alert.appendChild(btn);
         if (game_state.score == 25)
