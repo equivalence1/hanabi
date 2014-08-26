@@ -4,7 +4,7 @@ body {
 }
 
 #RulesModal p {
-	font-size: 16px;
+    font-size: 16px;
 }
 
 .room_list {
@@ -109,4 +109,8 @@ body, body.modal-open {
 
 body.modal-open {
     overflow-y: hidden;
+}
+
+#RulesModal p {
+    font-family: arial;
 }
