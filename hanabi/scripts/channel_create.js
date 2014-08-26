@@ -1,12 +1,17 @@
-var socket = channel.open();
-socket.onopen = onOpened;
-socket.onmessage = onMessage;
-socket.onerror = onError;
-socket.onclose = onClose;
+if (tok != "None") {
+    var socket = channel.open();
+    socket.onopen = onOpened;
+    socket.onmessage = onMessage;
+    socket.onerror = onError;
+    socket.onclose = onClose;
+}
 
 queue_to_show = [];
 
 function sendMessage(path, opt_param) {
+    if (channel == undefined)
+        return
+
     path += '?g=' + "g";
     if (opt_param) {
         path += '&' + opt_param;

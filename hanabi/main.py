@@ -21,6 +21,7 @@ import random
 
 from google.appengine.api import channel
 from google.appengine.ext import ndb
+from google.appengine.runtime import apiproxy_errors
 
 import jinja2
 import webapp2
@@ -112,13 +113,19 @@ class MainPage(webapp2.RequestHandler):
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
-        token = channel.create_channel(user_id, duration_minutes=10*60)
+        try:
+            token = channel.create_channel(user_id, duration_minutes=24*60)
+        except apiproxy_errors.OverQuotaError:
+            logging.info("OverQuotaError")
+            token = None
+
         template_values = {
             "token": token,
             "t": user_id,
             "games": games,
             "user_id": user_id
         }
+
         template = JINJA_ENVIRONMENT.get_template("index.html")
         self.response.write(template.render(template_values))
 

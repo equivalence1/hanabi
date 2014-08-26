@@ -17,7 +17,9 @@
     <body>
         <script type="text/javascript" src="/_ah/channel/jsapi"></script>
         <script>
-            var channel = new goog.appengine.Channel("{{ token }}");
+            tok = "{{ token }}";
+            if (tok != "None")
+               var channel = new goog.appengine.Channel(tok);
             var user_id = "{{ user_id }}";
         </script>
         <script type="text/javascript" src="scripts/global_vars.js"></script>
@@ -89,6 +91,10 @@
                     </ul>
                 </div>
             </div>
+        </div>
+
+        <div id="quota_error" style="display: none">
+            <p style="color: red"> Sorry, but we have no available channels anymore. Please, try to come later. </p>
         </div>
 
         <div id="main_content">

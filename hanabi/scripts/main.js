@@ -1,17 +1,25 @@
 $( document ).ready(function() {
     document.getElementById("alert_modal_content").innerHTML = "";
     refresh();
+
     $("#alertModal").on("hidden.bs.modal", function() {
         document.getElementById("alert_modal_content").innerHTML = "";
         if (queue_to_show.length != 0)
             show_in_panel(queue_to_show.shift());
     });
+
     $("#alertModal").on("shown.bs.modal", function() {
         if ($("#pass_enter") != undefined)
             $("#pass_enter").focus();
     });
-    nick = user_id;
+
+    nick = user_id;    
     document.getElementById("nick").innerHTML = user_id;
+    
+    if (tok == "None") {
+        hide_all();
+        document.getElementById("quota_error").style.display = "";
+    }
 });
 
 function go_to_main() {
