@@ -379,11 +379,11 @@ function display_hint() {
 function to_solitaire() {
     sendMessage(
         "/move",
-         "game_name=" + game_name +
-         "&user_id=" + user_id +
-         "&type=solitaire" +
-         "&user_position=" + game_state.my_position +
-         "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
+        "game_name=" + game_name +
+        "&user_id=" + user_id +
+        "&type=solitaire" +
+        "&user_position=" + game_state.my_position +
+        "&card_num=" + this.parentNode.getAttribute("card_id_in_hand")
     )
 }
 

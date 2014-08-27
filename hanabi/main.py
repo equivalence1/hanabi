@@ -342,14 +342,176 @@ class GameListRefreshHandler(webapp2.RequestHandler):
         logging.info("send " + param_string)
 
 
+@ndb.transactional(retries=4)
+def game_move(request, game_url, user_id):
+    game_key = ndb.Key(urlsafe=game_url)
+    game = game_key.get()
+
+    move_type = request.get("type")
+    user_position = int(request.get("user_position"))
+    if (move_type == "junk"):
+        card_num = int(request.get("card_num"))
+        game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
+        card_to_junk = game.game_state.user_hands[user_position].cards.pop(card_num)
+        game.game_state.junk.append(card_to_junk)
+
+        first_part = game.game_state.user_hands[user_position].cards[:card_num]
+        third_part = game.game_state.user_hands[user_position].cards[card_num:]
+
+        try:
+            new_card = game.game_state.deck.pop()
+        except:
+            game.game_state.moves_after_empty_deck += 1
+            new_card = Card(color=0, value=0)
+
+        game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
+
+        game.game_state.whose_move += 1
+        game.game_state.whose_move %= game.user_count
+
+        num = 0
+        for user_id in game.user_id_list:
+            channel.send_message(user_id, game_state_msg_for_user(game, num))
+            num += 1
+
+    if (move_type == "solitaire"):
+        card_num = int(request.get("card_num"))
+        cur_card = game.game_state.user_hands[user_position].cards[card_num]
+
+        mx = 0
+        for card in game.game_state.solitaire:
+            if (card.color == cur_card.color):
+                mx = max(mx, card.value)
+
+        if (mx != cur_card.value - 1):
+            channel.send_message(user_id, "alert?type=info&msg=Can't put this card to solitaire")
+            for user in game.user_id_list:
+                if (user != user_id):
+                    channel.send_message(user, "alert?type=info&msg=User " + user_id + " tried to put card to solitaire and failed")
+
+            game.game_state.junk.append(cur_card)
+            game.game_state.life_count -= 1
+            if (game.game_state.life_count == 0):
+                num = 0
+                for user in game.user_id_list:
+                    channel.send_message(user, game_state_msg_for_user(game, num))
+                    channel.send_message(user, "alert?type=over&msg=Game Over!")
+                    num += 1
+                game.key.delete()
+                return
+        else:
+            if (cur_card.value == 1):
+                game.game_state.solitaire.append(cur_card)
+            else:
+                x = 0
+                for some_card in game.game_state.solitaire:
+                    if (some_card.color == cur_card.color):
+                        break
+                    x += 1
+                game.game_state.solitaire[x] = cur_card
+                if (cur_card.value == 5):
+                    game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
+
+        game.game_state.user_hands[user_position].cards.pop(card_num)
+        first_part = game.game_state.user_hands[user_position].cards[:card_num]
+        third_part = game.game_state.user_hands[user_position].cards[card_num:]
+
+        try:
+            new_card = game.game_state.deck.pop()
+        except:
+            game.game_state.moves_after_empty_deck += 1
+            new_card = Card(color=0, value=0)
+
+        game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
+
+        game.game_state.whose_move += 1
+        game.game_state.whose_move %= game.user_count
+
+        num = 0
+        for user in game.user_id_list:
+            channel.send_message(user, game_state_msg_for_user(game, num))
+            num += 1
+
+        x = 0
+        for some_card in game.game_state.solitaire:
+            if (some_card.value == 5):
+                x += 1
+
+        if (x == 5):
+            for user in game.user_id_list:
+                channel.send_message(user, "alert?type=over&msg=Game Over!")
+            game.key.delete()
+            return
+
+    if (move_type == "hint"):
+        logging.info("hint")
+        color = int(request.get("color"))
+        value = int(request.get("value"))
+
+        if (game.game_state.hint_count == 0):
+            channel.send_message(user_id, "alert?type=error&msg=U have no hints anymore")
+            return
+
+        game.game_state.hint_count -= 1
+
+        card_ids = []
+
+        num = 0
+        for card in game.game_state.user_hands[user_position].cards:
+            if (card.color == color):
+                card_ids.append(num)
+            elif (card.value == value):
+                card_ids.append(num)
+            num += 1
+
+        if (len(game.game_state.deck) == 0):
+            game.game_state.moves_after_empty_deck += 1
+
+        game.game_state.whose_move += 1
+        game.game_state.whose_move %= game.user_count
+
+        num = 0
+        for user in game.user_id_list:
+            if (color != -1):
+                channel.send_message(
+                    user,
+                    game_state_msg_for_user(game, num) +\
+                    "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                    "&to_player=" + str(user_position) +\
+                    "&type=color" +\
+                    "&card_ids=" + "".join(map(str, card_ids)) +\
+                    "&hinted_color=" + color_by_number[color]
+                )
+            else:
+                channel.send_message(
+                    user,
+                    game_state_msg_for_user(game, num) +\
+                    "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
+                    "&to_player=" + str(user_position) +\
+                    "&type=value" +\
+                    "&card_ids=" + "".join(map(str, card_ids)) +\
+                    "&hinted_value=" + str(value)
+                )
+            num += 1
+
+    if (game.user_count == game.game_state.moves_after_empty_deck):
+        num = 0
+        for user in game.user_id_list:
+            channel.send_message(user, game_state_msg_for_user(game, num))
+            channel.send_message(user, "alert?type=over&msg=Game Over!")
+            num += 1
+        game.key.delete()
+        return
+
+    game.put()
+
+
 class GameMoveHandler(webapp2.RequestHandler):
     def post(self):
         logging.info("GameMoveHandler post")
-        move_type = self.request.get("type")
         user_id = self.request.get("user_id")
         game_name = self.request.get("game_name")
-        user_position = int(self.request.get("user_position"))
-        
+
         games = Game.query(Game.name == game_name).fetch(1)
 
         if (len(games) != 0):
@@ -362,161 +524,9 @@ class GameMoveHandler(webapp2.RequestHandler):
             channel.send_message(user_id, "alert?type=error&msg=Not your turn!")
             return
 
-        if (move_type == "junk"):
-            card_num = int(self.request.get("card_num"))
-            game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
-            card_to_junk = game.game_state.user_hands[user_position].cards.pop(card_num)
-            game.game_state.junk.append(card_to_junk)
+        game_url = game.key.urlsafe()
 
-            first_part = game.game_state.user_hands[user_position].cards[:card_num]
-            third_part = game.game_state.user_hands[user_position].cards[card_num:]
-
-            try:
-                new_card = game.game_state.deck.pop()
-            except:
-                game.game_state.moves_after_empty_deck += 1
-                new_card = Card(color=0, value=0)
-
-            game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
-
-            game.game_state.whose_move += 1
-            game.game_state.whose_move %= game.user_count
-
-            num = 0
-            for user_id in game.user_id_list:
-                channel.send_message(user_id, game_state_msg_for_user(game, num))
-                num += 1
-
-        if (move_type == "solitaire"):
-            card_num = int(self.request.get("card_num"))
-            cur_card = game.game_state.user_hands[user_position].cards[card_num]
-
-            mx = 0
-            for card in game.game_state.solitaire:
-                if (card.color == cur_card.color):
-                    mx = max(mx, card.value)
-
-            if (mx != cur_card.value - 1):
-                channel.send_message(user_id, "alert?type=info&msg=Can't put this card to solitaire")
-                for user in game.user_id_list:
-                    if (user != user_id):
-                        channel.send_message(user, "alert?type=info&msg=User " + user_id + " tried to put card to solitaire and failed")
-
-                game.game_state.junk.append(cur_card)
-                game.game_state.life_count -= 1
-                if (game.game_state.life_count == 0):
-                    num = 0
-                    for user in game.user_id_list:
-                        channel.send_message(user, game_state_msg_for_user(game, num))
-                        channel.send_message(user, "alert?type=over&msg=Game Over!")
-                        num += 1
-                    game.key.delete()
-                    return
-            else:
-                if (cur_card.value == 1): 
-                    game.game_state.solitaire.append(cur_card)
-                else:
-                    x = 0
-                    for some_card in game.game_state.solitaire:
-                        if (some_card.color == cur_card.color):
-                            break
-                        x += 1
-                    game.game_state.solitaire[x] = cur_card
-                    if (cur_card.value == 5):
-                        game.game_state.hint_count = min(8, game.game_state.hint_count + 1)
-
-            game.game_state.user_hands[user_position].cards.pop(card_num)
-            first_part = game.game_state.user_hands[user_position].cards[:card_num]
-            third_part = game.game_state.user_hands[user_position].cards[card_num:]
-
-            try:
-                new_card = game.game_state.deck.pop()
-            except:
-                game.game_state.moves_after_empty_deck += 1
-                new_card = Card(color=0, value=0)
-
-            game.game_state.user_hands[user_position].cards = first_part + [new_card] + third_part
-
-            game.game_state.whose_move += 1
-            game.game_state.whose_move %= game.user_count
-
-            num = 0
-            for user in game.user_id_list:
-                channel.send_message(user, game_state_msg_for_user(game, num))
-                num += 1
-
-            x = 0
-            for some_card in game.game_state.solitaire:
-                if (some_card.value == 5):
-                    x += 1
-
-            if (x == 5):
-                for user in game.user_id_list:
-                    channel.send_message(user, "alert?type=over&msg=Game Over!")
-                game.key.delete()
-                return
-
-        if (move_type == "hint"):
-            logging.info("hint")
-            color = int(self.request.get("color"))
-            value = int(self.request.get("value"))
-
-            if (game.game_state.hint_count == 0):
-                channel.send_message(user_id, "alert?type=error&msg=U have no hints anymore")
-                return
-
-            game.game_state.hint_count -= 1
-
-            card_ids = []
-
-            num = 0
-            for card in game.game_state.user_hands[user_position].cards:
-                if (card.color == color):
-                    card_ids.append(num)
-                elif (card.value == value):
-                    card_ids.append(num)
-                num += 1
-
-            if (len(game.game_state.deck) == 0):
-                game.game_state.moves_after_empty_deck += 1
-
-            game.game_state.whose_move += 1
-            game.game_state.whose_move %= game.user_count
-
-            num = 0
-            for user in game.user_id_list:
-                if (color != -1):
-                    channel.send_message(
-                        user,
-                        game_state_msg_for_user(game, num) +\
-                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=color" +\
-                        "&card_ids=" + "".join(map(str, card_ids)) +\
-                        "&hinted_color=" + color_by_number[color]
-                    )
-                else:
-                    channel.send_message(
-                        user,
-                        game_state_msg_for_user(game, num) +\
-                        "&last_move=hint&from_player=" + str(game.game_state.whose_move) +\
-                        "&to_player=" + str(user_position) +\
-                        "&type=value" +\
-                        "&card_ids=" + "".join(map(str, card_ids)) +\
-                        "&hinted_value=" + str(value)
-                    )
-                num += 1
-
-        if (game.user_count == game.game_state.moves_after_empty_deck):
-            num = 0
-            for user in game.user_id_list:
-                channel.send_message(user, game_state_msg_for_user(game, num))
-                channel.send_message(user, "alert?type=over&msg=Game Over!")
-                num += 1
-            game.key.delete()
-            return            
-
-        game.put()
+        game_move(self.request, game_url, user_id)
 
 
 @ndb.transactional(retries=4)
