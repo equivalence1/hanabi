@@ -570,7 +570,7 @@ def update_online_users(game_url):
     game_key = ndb.Key(urlsafe=game_url)
     game = game_key.get()
 
-    users_str = "&users_list=" + "<br>".join([user for user in game.user_id_list])
+    users_str = "&users_list=" + "<br>".join([user for user in game.user_nick_list])
     for user in game.user_id_list:
         channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
 
