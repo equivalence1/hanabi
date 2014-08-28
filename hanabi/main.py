@@ -28,7 +28,7 @@ import webapp2
 
 card_amount_in_deck_by_value = [0, 3, 2, 2, 2, 1]
 card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4]
-color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
+color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"]
 
 chars_for_user_id = []
 for i in range(48, 58):
@@ -626,6 +626,16 @@ class ChannelErrorHandler(webapp2.RequestHandler):
 
         logging.info("user_id: " + user_id + "\n" + "error: " + error)
 
+
+class ConnectionHandler(webapp2.RequestHandler):
+    def post(self):
+        logging.info("ConnectionHandler post")
+
+        user_id = self.request.get("from")
+
+        logging.info(user_id + " connected")
+
+
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
@@ -636,5 +646,6 @@ application = webapp2.WSGIApplication([
     ("/move", GameMoveHandler),
     ("/leave", LeaveHandler),
     ("/_ah/channel/disconnected/", DisconnectionHandler),
+    ("/_ah/channel/connected/", ConnectionHandler),
     ("/error", ChannelErrorHandler)
 ], debug = True)
