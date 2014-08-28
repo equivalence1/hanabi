@@ -395,9 +395,18 @@ def game_move(request, game_url, user_id):
 
         if (mx != cur_card.value - 1):
             channel.send_message(user_id, "alert?type=info&msg=Can't put this card to solitaire")
+            num = 0
+            for user in game.user_id_list:
+                if (user == user_id):
+                    break
+                num += 1
+
             for user in game.user_id_list:
                 if (user != user_id):
-                    channel.send_message(user, "alert?type=info&msg=User " + user_id + " tried to put card to solitaire and failed")
+                    channel.send_message(
+                        user,
+                        "alert?type=info&msg=User " + game.user_nick_list[num] + " tried to put card to solitaire and failed"
+                    )
 
             game.game_state.junk.append(cur_card)
             game.game_state.life_count -= 1
