@@ -30,6 +30,13 @@ card_amount_in_deck_by_value = [0, 3, 2, 2, 2, 1]
 card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4]
 color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"];
 
+chars_for_user_id = []
+for i in range(48, 58):
+    chars_for_user_id.append(chr(i))
+for i in range(97, 123):
+    chars_for_user_id.append(chr(i))
+chars_len = len(chars_for_user_id)
+
 JINJA_ENVIRONMENT = jinja2.Environment(
     loader=jinja2.FileSystemLoader(os.path.dirname(__file__)),
     extensions=["jinja2.ext.autoescape"],
@@ -107,14 +114,17 @@ class Game(ndb.Model):
 
 class MainPage(webapp2.RequestHandler):
     def get(self):
-        user_id = str(random.randint(0, (1 << 31) - 1))
+
+        user_id = ""
+        for i in range(10):
+            user_id += chars_for_user_id[random.randint(0, chars_len - 1)]
 
         games_query = Game.query(
             Game.started == False, Game.full == False).order(-Game.date)
         games = games_query
 
         try:
-            token = channel.create_channel(user_id, duration_minutes=24*60)
+            token = channel.create_channel(user_id, duration_minutes=24*60-1)
         except apiproxy_errors.OverQuotaError:
             logging.info("OverQuotaError")
             token = None
@@ -588,7 +598,7 @@ class DisconnectionHandler(webapp2.RequestHandler):
             if (user_disconnect(user_id, game_url)):
                 update_online_users(game_url)
         else:
-            logging.info("DisconnectionHandler post: game already deleted")
+            logging.info("DisconnectionHandler post: " + user_id)
 
 
 class LeaveHandler(webapp2.RequestHandler):
@@ -607,6 +617,15 @@ class LeaveHandler(webapp2.RequestHandler):
             logging.info("LeaveHandler post: game already deleted")
 
 
+class ChannelErrorHandler(webapp2.RequestHandler):
+    def post(self):
+        logging.info("ChannelErrorHandler post")
+
+        user_id = self.request.get("user_id")
+        error = self.request.get("err")
+
+        logging.info("user_id: " + user_id + "\n" + "error: " + error)
+
 application = webapp2.WSGIApplication([
     ("/", MainPage),
     ("/game_create", GameCreateHandler),
@@ -616,5 +635,6 @@ application = webapp2.WSGIApplication([
     ("/game_list_refresh", GameListRefreshHandler),
     ("/move", GameMoveHandler),
     ("/leave", LeaveHandler),
-    ("/_ah/channel/disconnected/", DisconnectionHandler)
+    ("/_ah/channel/disconnected/", DisconnectionHandler),
+    ("/error", ChannelErrorHandler)
 ], debug = True)

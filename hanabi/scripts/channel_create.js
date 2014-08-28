@@ -26,7 +26,7 @@ function onOpened() {
 }
 
 function onError(err) {
-//    alert(err);
+    sendMessage("error", "user_id=" + user_id + "&err=" + err);
 }
 
 function onClose() {
