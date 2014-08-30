@@ -30,6 +30,8 @@ card_amount_in_deck_by_value = [0, 3, 2, 2, 2, 1]
 card_amount_in_hand_by_user_count = [0, 0, 5, 5, 4, 4]
 color_by_number = ["undefined", "red", "green", "blue", "yellow", "white"]
 
+online = 0
+
 chars_for_user_id = []
 for i in range(48, 58):
     chars_for_user_id.append(chr(i))
@@ -45,7 +47,6 @@ JINJA_ENVIRONMENT = jinja2.Environment(
 
 def game_key(game_name):
     return ndb.Key("Game", game_name)
-
 
 def game_state_msg_for_user(game, num):
     msg = "start_game?"
@@ -71,6 +72,7 @@ def game_state_msg_for_user(game, num):
     for card in game.game_state.junk:
         msg += str(card.color) + str(card.value)
 
+    msg += "&online=" + str(online)
     return msg
 
 
@@ -133,7 +135,8 @@ class MainPage(webapp2.RequestHandler):
             "token": token,
             "t": user_id,
             "games": games,
-            "user_id": user_id
+            "user_id": user_id,
+            "online_on_site": online
         }
 
         template = JINJA_ENVIRONMENT.get_template("index.html")
@@ -155,7 +158,8 @@ class GameCreateHandler(webapp2.RequestHandler):
             logging.info("Game with name " + game_name + " already exists")
             channel.send_message(
                 user_id,
-                "alert?type=error&msg=Game with name " + game_name + " already exists"
+                "alert?type=error&msg=Game with name " + game_name + " already exists" +
+                "&online=" + str(online)
             )
             return
 
@@ -175,7 +179,7 @@ class GameCreateHandler(webapp2.RequestHandler):
         channel.send_message(
             user_id,
             "created?&users_count=" + str(game.user_count) +
-            "&users_list=" + nick
+            "&users_list=" + nick + "&online=" + str(online)
         )
 
 
@@ -188,19 +192,19 @@ def add_user_to_game(game_url, game_name, user_id, nick, entered_password):
             "Wrong password for " + game_name + ", entered: " +
             entered_password + ", real: " + game.password
         )
-        channel.send_message(user_id, "alert?type=error&msg=Wrong password")
+        channel.send_message(user_id, "alert?type=error&msg=Wrong password&online" + str(online))
         return False
 
     if game.max_user_count <= game.user_count:
         logging.info(game_name + " already full")
-        channel.send_message(user_id, "alert?type=error&msg=game already full")
+        channel.send_message(user_id, "alert?type=error&msg=game already full&online" + str(online))
         return False
 
     if user_id in game.user_id_list:
         logging.info(user_id + " already in " + game_name)
         channel.send_message(
             user_id,
-            "alert?type=error&msg=you are already in this game"
+            "alert?type=error&msg=you are already in this game&online" + str(online)
         )
         return False
 
@@ -226,7 +230,7 @@ class JoinGame(webapp2.RequestHandler):
         games = Game.query(Game.name == game_name).fetch(1)
         if len(games) != 1:
             logging.info("Wrong game name " + game_name)
-            channel.send_message(user_id, "alert?type=error&msg=Wrong game name")
+            channel.send_message(user_id, "alert?type=error&msg=Wrong game name&online" + str(online))
             return
 
         game_url = games[0].key.urlsafe()
@@ -246,7 +250,8 @@ class JoinGame(webapp2.RequestHandler):
                 user_id,
                 "joined?&game_name=" + game_name +
                 "&started=" + str(game.started) +
-                "&users_count=" + str(game.user_count) + users_str
+                "&users_count=" + str(game.user_count) + users_str +
+                "&online=" + str(online)
             )
 
             for user in game.user_id_list:
@@ -254,7 +259,7 @@ class JoinGame(webapp2.RequestHandler):
                     channel.send_message(
                         user,
                         "update_online?users_count=" + str(game.user_count) +
-                        users_str
+                        users_str + "&online=" + str(online)
                     )
 
 
@@ -274,7 +279,7 @@ class SendChatMessage(webapp2.RequestHandler):
                 channel.send_message(
                     user_id,
                     "new_message?from_id=" + nick +
-                    "&message=" + message
+                    "&message=" + message + "&online=" + str(online)
                 )
 
 
@@ -348,8 +353,8 @@ class GameListRefreshHandler(webapp2.RequestHandler):
 
         param_string = start + "num=" + str(num) + param_string
 
-        channel.send_message(user_id, param_string)
-        logging.info("send " + param_string)
+        channel.send_message(user_id, param_string + "&online=" + str(online))
+        logging.info("send " + param_string + "&online=" + str(online))
 
 
 @ndb.transactional(retries=4)
@@ -468,7 +473,7 @@ def game_move(request, game_url, user_id):
         value = int(request.get("value"))
 
         if (game.game_state.hint_count == 0):
-            channel.send_message(user_id, "alert?type=error&msg=U have no hints anymore")
+            channel.send_message(user_id, "alert?type=error&msg=U have no hints anymore" + "&online=" + str(online))
             return
 
         game.game_state.hint_count -= 1
@@ -536,11 +541,11 @@ class GameMoveHandler(webapp2.RequestHandler):
         if (len(games) != 0):
             game = games[0]
         else:
-            channel.send_message(user_id, "alert?type=error&msg=Game already over, man...")
+            channel.send_message(user_id, "alert?type=error&msg=Game already over, man..." + "&online=" + str(online))
             return
 
         if (game.user_id_list.index(user_id) != game.game_state.whose_move):
-            channel.send_message(user_id, "alert?type=error&msg=Not your turn!")
+            channel.send_message(user_id, "alert?type=error&msg=Not your turn!" + "&online=" + str(online))
             return
 
         game_url = game.key.urlsafe()
@@ -558,7 +563,7 @@ def user_disconnect(user_id, game_url):
     if (game.started):
         for user in game.user_id_list:
             if (user != user_id):
-                channel.send_message(user, "alert?type=error&msg=KABOOM user #" + user_id + " gone!!!")
+                channel.send_message(user, "alert?type=error&msg=KABOOM user #" + user_id + " gone!!!" + "&online=" + str(online))
         game.key.delete()
         return False
 
@@ -591,7 +596,10 @@ def update_online_users(game_url):
 
     users_str = "&users_list=" + "<br>".join([user for user in game.user_nick_list])
     for user in game.user_id_list:
-        channel.send_message(user, "update_online?users_count=" + str(game.user_count) + users_str)
+        channel.send_message(
+            user,
+            "update_online?users_count=" + str(game.user_count) + users_str + "&online=" + str(online)
+        )
 
 
 class DisconnectionHandler(webapp2.RequestHandler):
@@ -599,6 +607,9 @@ class DisconnectionHandler(webapp2.RequestHandler):
         logging.info("DisconnectionHandler post")
 
         user_id = self.request.get("from")
+
+        global online
+        online -= 1
 
         games = Game.query(Game.user_id_list == user_id).fetch(1)
 
@@ -641,6 +652,9 @@ class ConnectionHandler(webapp2.RequestHandler):
         logging.info("ConnectionHandler post")
 
         user_id = self.request.get("from")
+
+        global online
+        online += 1
 
         logging.info(user_id + " connected")
 

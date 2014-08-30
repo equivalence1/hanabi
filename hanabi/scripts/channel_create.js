@@ -55,6 +55,11 @@ function onMessage(msg) {
         display_chat_room();
     }
 
+    if (msg.data.indexOf("online") != -1) {
+        onl = deserialize(msg.data, "online");
+        document.getElementById("online_on_site").innerHTML = onl;
+    }
+
     if (msg.data.indexOf("new_message") === 0) {
         var new_message = deserialize(msg.data, "message");
         var from_id = deserialize(msg.data, "from_id");

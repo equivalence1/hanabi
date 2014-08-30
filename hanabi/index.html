@@ -77,12 +77,18 @@
                     <a class="navbar-brand" href="#" onclick="go_to_main();">Hanabi</a>
                 </div>
                 <div class="collapse navbar-collapse">
+                    <ul class="nav navbar-nav navbar-left">
+                        <li>
+                            <a style="font-size: 16px" title="Online users now">Online: <span id="online_on_site">{{ online_on_site }}</span></a>
+                        </li>
+                    </ul>
+
                     <ul class="nav navbar-nav navbar-right">
                         <li>
-                            <a style="font-size: 16px" title="You can't change your nick during the game">Your current nick: <span id="nick"></span></a>
+                            <a style="font-size: 16px" title="You can't change your nick during the game">Your nick: <span id="nick"></span></a>
                         </li>
                         <li>
-                            <input style="margin-top: 8px; margin-right: 3px;" type="text" class="form-control" placeholder="new nick" maxlength="20" id="new_nick">
+                            <input style="margin-top: 8px; margin-right: 3px;" type="text" class="form-control" placeholder="new nick" maxlength="15" id="new_nick">
                         </li>
                         <li>
                             <button style="margin-top: 8px; margin-left: 3px;" type="submit" class="btn btn-success" onclick="set_nick()" id="set_new_nick">Set</button>
