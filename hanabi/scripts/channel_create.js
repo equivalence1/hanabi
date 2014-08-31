@@ -10,7 +10,7 @@ queue_to_show = [];
 
 function sendMessage(path, opt_param) {
     if (channel == undefined)
-        return
+        return;
 
     path += '?g=' + "g";
     if (opt_param) {
