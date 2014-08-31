@@ -51,7 +51,7 @@ function create_game() {
 function join_room() {
     var cont = document.getElementById("alert_modal_content");
     if (cont.innerHTML != "")
-        return
+        return;
     if (this.getAttribute("locked") === "False") {
         sendMessage("/join_game", "user_id=" + user_id + "&nick=" + nick + "&game_password=" + "&game_name=" + this.getAttribute("room_name"));
         return;
@@ -108,6 +108,7 @@ function display_main_content() {
 }
 
 function display_chat_room() {
+    document.getElementById("message").value = "";
     document.getElementById("chat_room").style.display = "";
     document.getElementById("new_nick").style.display = "none";
     document.getElementById("set_new_nick").style.display = "none";

@@ -201,7 +201,8 @@ function add_card_to_hand(hand, card, whose_hand, card_id_in_hand) {
     }
 
     new_card.appendChild(card_content);
-    new_card.appendChild(card_over);
+    if (game_state.whose_move == game_state.my_position)
+        new_card.appendChild(card_over);
     hand.appendChild(new_card);
 }
 
