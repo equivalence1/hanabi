@@ -302,7 +302,7 @@ function display_hint() {
         arrow.time = 0;
 
         if (hint.hinted_color != undefined)
-            arrow.style.color = hint.hinted_color;
+            arrow.setAttribute("class", hint.hinted_color + "_card arrow");
         else
             arrow.style.color = "#999999";
 
