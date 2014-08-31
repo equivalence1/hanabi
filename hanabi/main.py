@@ -202,7 +202,7 @@ def add_user_to_game(game_url, game_name, user_id, nick, entered_password):
 
     if user_id in game.user_id_list:
         logging.info(user_id + " already in " + game_name)
-        res += [["alert?type=error&msg=you are already in this game&online=" + str(online)]]
+        res += [[user_id, "alert?type=error&msg=you are already in this game&online=" + str(online)]]
         return [False, res]
 
     game.user_id_list.append(user_id)
@@ -269,7 +269,6 @@ class SendChatMessage(webapp2.RequestHandler):
         logging.info("SendChatMessage post")
 
         game_name = self.request.get("game_name")
-        from_id = self.request.get("user_id")
         message = self.request.get("message")
         nick = self.request.get("nick")
 
@@ -292,7 +291,6 @@ class GameStartHandler(webapp2.RequestHandler):
 
         game = Game.query(Game.name == game_name).fetch(1)[0]
 
-        #game.user_count = 4
         if (game.user_count < 2):
             return
 
